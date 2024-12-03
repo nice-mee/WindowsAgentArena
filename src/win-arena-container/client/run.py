@@ -190,7 +190,8 @@ def test(
         from mm_agents.claude.agent import ClaudeAgent
         agent = ClaudeAgent()
     else:
-        raise ValueError(f"Unknown agent name: {cfg_args['agent_name']}")
+        from mm_agents.server_agents.agent import ServerAgent
+        agent = ServerAgent(agent_name=cfg_args["agent_name"])
     
     env = DesktopEnv(
         action_space=agent.action_space,

@@ -1,0 +1,19 @@
+{
+    "repositories": [
+      {
+        "name": "Agent_s",
+        "url": "https://github.com/simular-ai/Agent-S",
+        "foldertocopy": "agent_s",
+        "runningmode": "client"
+      },
+      {
+        "name": "UFO",
+        "url": "https://github.com/PaulJiangMS/UFO",
+        "foldertocopy": "ufo",
+        "runningmode": "server",
+        "setupscript": "ufo/setup.ps1", 
+        "startuptype": "powershell",
+        "startuppoint": "ufo/startup.ps1"
+      }
+    ]
+  }
