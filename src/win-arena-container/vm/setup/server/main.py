@@ -1755,8 +1755,68 @@ def get_check_if_world_clock_exists():
     else:
         return jsonify({'status': 'error', 'message': 'World clock does not exist'}), 400
 
+# Load JSON configuration from file
+import json
+def load_config():
+    with open('../agents.json') as f:
+        return json.load(f)
+config = load_config()
+
+@app.route('/run_server_agent', methods=['POST'])
+def run_server_agent():
+    try:
+        data = request.json
+        instruction = data.get('instruction', "")
+        agent_name = data.get('agent', "")
+
+        # Find the repository configuration for the specified agent
+        repo_config = next((repo for repo in config['server_repositories'] if repo['name'] == agent_name), None)
+
+        if repo_config is None:
+            return jsonify({"status": "error", "message": "Agent not found"}), 404
+
+        # Extract the entry point from the repository configuration
+        startup_type = repo_config.get('startuptype', "")
+        startup_point = os.path.join(r'\\host.lan\Data', 'mm_agents', agent_name, repo_config.get('startuppoint', "").replace('/', '\\'))
+
+        # Determine the command based on the startup type
+        if startup_type.lower() == 'powershell':
+            command = ['powershell', '-ExecutionPolicy', 'Bypass', '-File', startup_point, '-instruction', instruction]
+        elif startup_type.lower() == 'python':
+            command = ['py', startup_point, '--instruction', instruction]
+        else:
+            return jsonify({"status": "error", "message": "Unsupported startup type"}), 400
+
+        # Set environment variable to ensure UTF-8 encoding
+        env = os.environ.copy()
+        env['PYTHONIOENCODING'] = 'utf-8'
+
+        # Run the entry point script with the instruction argument
+        result = subprocess.run(command, capture_output=True, text=True, encoding='utf-8', env=env)
+
+        # Check if the script ran successfully
+        if result.returncode == 0:
+            response = {
+                "status": "success",
+                "output": result.stdout
+            }
+        else:
+            response = {
+                "status": "error",
+                "output": result.stderr
+            }
+
+        return jsonify(response)
+
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)})
+
+    except Exception as e:
+        print(f"Error running agent: {e}")
+
 if __name__ == '__main__':
     app.run(debug=True, host="0.0.0.0", port=args.port)
+
 
 
 # example command to test server. get platform
