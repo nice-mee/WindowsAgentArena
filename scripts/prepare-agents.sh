@@ -29,7 +29,6 @@ repos=$(jq -c '.repositories[]' "$CONFIG_FILE")
 for repo in $repos; do
     REPO_URL=$(echo "$repo" | jq -r '.url')
     REPO_DIR_NAME=$(echo "$repo" | jq -r '.name')
-    REPO_FOLDER=$(echo "$repo" | jq -r '.foldertocopy')
     RUNNING_MODE=$(echo "$repo" | jq -r '.runningmode')
 
     # Set the target folder based on the running mode
@@ -49,12 +48,7 @@ for repo in $repos; do
         echo "Directory $REPO_DIR already exists. Skipping clone."
     else
         echo "Cloning $REPO_URL into $REPO_DIR..."
-        git clone --no-checkout "$REPO_URL" "$REPO_DIR"
-        pushd "$REPO_DIR"
-        git sparse-checkout init --cone
-        echo "$REPO_FOLDER" > .git/info/sparse-checkout
-        git checkout
-        popd
+        git clone "$REPO_URL" "$REPO_DIR"
     fi
 done
 

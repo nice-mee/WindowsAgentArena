@@ -1768,6 +1768,7 @@ def run_server_agent():
         data = request.json
         instruction = data.get('instruction', "")
         agent_name = data.get('agent', "")
+        agent_settings = data.get('agent_settings', {})
 
         # Find the repository configuration for the specified agent
         repo_config = next((repo for repo in config['server_repositories'] if repo['name'] == agent_name), None)
@@ -1781,9 +1782,15 @@ def run_server_agent():
 
         # Determine the command based on the startup type
         if startup_type.lower() == 'powershell':
-            command = ['powershell', '-ExecutionPolicy', 'Bypass', '-File', startup_point, '-instruction', instruction]
+            if agent_settings == "":
+                command = ['powershell', '-ExecutionPolicy', 'Bypass', '-File', startup_point, '-instruction', instruction]
+            else:
+                command = ['powershell', '-ExecutionPolicy', 'Bypass', '-File', startup_point, '-instruction', instruction, '-agent_settings', json.dumps(agent_settings)]
         elif startup_type.lower() == 'python':
-            command = ['py', startup_point, '--instruction', instruction]
+            if agent_settings == "":
+                command = ['py', startup_point, '--instruction', instruction]
+            else:
+                command = ['py', startup_point, '--instruction', instruction, '--agent_setting', agent_settings]
         else:
             return jsonify({"status": "error", "message": "Unsupported startup type"}), 400
 
