@@ -30,6 +30,9 @@ RUN if [ "${DEPLOY_MODE}" = "azure" ]; then \
         sed -i "s|${WINDOWS_DATA_FOLDER}|${WINDOWS_OEM_FOLDER}|g" "/${OEM_FOLDER}/install.bat"; \
         sed -i "s|${WINDOWS_DATA_FOLDER}|${WINDOWS_OEM_FOLDER}|g" "/${OEM_FOLDER}/on-logon.ps1"; \
         sed -i "s|${WINDOWS_DATA_FOLDER}|${WINDOWS_OEM_FOLDER}|g" "/${OEM_FOLDER}/setup.ps1"; \
+        sed -i "s|${WINDOWS_DATA_FOLDER}|${WINDOWS_OEM_FOLDER}|g" "/${OEM_FOLDER}/setupAgents.ps1"; \
+        sed -i "s|${WINDOWS_DATA_FOLDER}|${WINDOWS_OEM_FOLDER}|g" "/${OEM_FOLDER}/server/main.py"; \
+        sed -i "s|${WINDOWS_DATA_FOLDER}|${WINDOWS_OEM_FOLDER}|g" "/${OEM_FOLDER}/on-logon.vbs"; \
     fi
     
 # Copy client application

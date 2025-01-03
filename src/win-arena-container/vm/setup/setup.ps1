@@ -423,7 +423,7 @@ if (-not (Get-NetFirewallRule -Name $caddyProxyRuleName -ErrorAction SilentlyCon
     Write-Host "Firewall rule already exists. $caddyProxyRuleName "
 }
 
-$onLogonScriptPath = "$scriptFolder\on-logon.ps1"
+$onLogonScriptPath = "$scriptFolder\on-logon.vbs"
 # Check if the scheduled task exists before unregistering it
 if (Get-ScheduledTask -TaskName $onLogonTaskName -ErrorAction SilentlyContinue) {
     Write-Host "Scheduled task $onLogonTaskName already exists."

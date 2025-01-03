@@ -4,9 +4,9 @@
       "name": "UFO",
       "url": "https://github.com/PaulJiangMS/UFO",
       "runningmode": "server",
-      "setupscript": "windows-arena/setup.ps1", 
+      "setupscript": "windows_arena/setup.ps1", 
       "startuptype": "powershell",
-      "startuppoint": "windows-arena/startup.ps1"
+      "startuppoint": "windows_arena/startup.ps1"
     }
   ]
 }
