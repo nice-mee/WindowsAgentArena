@@ -1758,7 +1758,7 @@ def get_check_if_world_clock_exists():
 # Load JSON configuration from file
 import json
 def load_config():
-    with open('../agents.json') as f:
+    with open(os.path.join(r'\\host.lan\Data', 'agents.json')) as f:
         return json.load(f)
 config = load_config()
 
