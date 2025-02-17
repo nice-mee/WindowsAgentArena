@@ -67,3 +67,8 @@ ultralytics
 py7zr
 anthropic
 einops
+
+# UFO
+msal
+azure_identity_broker
+colorama==0.4.6

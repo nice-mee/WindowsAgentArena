@@ -2,7 +2,7 @@
   "repositories": [
     {
       "name": "UFO",
-      "url": "https://github.com/PaulJiangMS/UFO",
+      "url": "https://github.com/nice-mee/UFO",
       "runningmode": "server",
       "setupscript": "windows_arena/setup.ps1", 
       "startuptype": "powershell",
