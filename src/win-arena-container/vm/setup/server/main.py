@@ -1801,10 +1801,34 @@ def run_server_agent():
         # Run the entry point script with the instruction argument
         result = subprocess.run(command, capture_output=True, text=True, encoding='utf-8', env=env)
 
+        log_folder = os.path.join(r'\\host.lan\Data', 'mm_agents', agent_name, 'logs')
+
+        # subfolders = []
+        # for item in os.listdir(log_folder):
+        #     item_path = os.path.join(log_folder, item)
+        #     if os.path.isdir(item_path):
+        #         subfolders.append(item)
+
+        # largest_subfolder = max(subfolders)
+
+        logfile_path = os.path.join(log_folder, agent_settings["task_name"], 'evaluation.log')
+
+        # Extract logfile content
+        with open(logfile_path, 'r') as logfile:
+            log_content = logfile.read()
+
+        # Check if log_content is empty
+        if not log_content:
+            complete_content = "no"
+        else:
+            # Parse the log content as JSON
+            log_json = json.loads(log_content)
+            complete_content = log_json.get("complete", "")
+
         # Check if the script ran successfully
         if result.returncode == 0:
             response = {
-                "status": "success",
+                "status": "success" if complete_content == "yes" else "failed",
                 "output": result.stdout
             }
         else:
