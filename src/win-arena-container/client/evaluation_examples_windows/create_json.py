@@ -34,7 +34,7 @@ def main(base_dir, output_file, filter_out_categories=None):
     print(f"Total file count: {total_files_count}")
 
 if __name__ == "__main__":
-    base_dir = "examples"
+    base_dir = "examples_original"
     
     output_file = "test_all.json"
     filter_out_categories = None

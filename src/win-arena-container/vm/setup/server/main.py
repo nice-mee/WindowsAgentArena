@@ -1450,6 +1450,12 @@ def close_all_windows():
             if window.title != "Program Manager" and window.title != "" and \
                 window.title != "Administrator: C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe":
                 window.close()
+
+        # Close forcelly
+        app_names = ["WINWORD.EXE", "EXCEL.EXE", "POWERPNT.EXE"]
+        for app_name in app_names:
+            os.system(f"taskkill /f /im {app_name}")
+            time.sleep(1)
             
         # for window in gw.getAllWindows():
         #     if window.title != "Program Manager" and window.title != "":

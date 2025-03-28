@@ -3,6 +3,7 @@ from __future__ import annotations
 import logging
 import os
 import subprocess
+import sys
 import time
 import json
 from typing import Callable, Any, Optional, Tuple
@@ -105,6 +106,15 @@ class DesktopEnv(gym.Env):
         self._traj_no: int = -1
         self._step_no: int = 0
         self.action_history: List[Dict[str, any]] = []
+
+    def requirement_init(self):
+        try:
+            import pygame
+        except ImportError:
+            print("pygame is not installed, installing now...")
+            subprocess.check_call([sys.executable, "-m", "pip", "install", "pygame"])
+            import pygame  # Re-import to ensure successful installation
+            print("pygame has been installed successfully")
 
     @property
     def vm_platform(self):
