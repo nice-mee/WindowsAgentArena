@@ -159,6 +159,17 @@ def compare_table(result: str, expected: str = None, **options) -> float:
                 return 0.
             sheet2: pd.DataFrame = _load_sheet(*parse_idx(r["sheet_idx1"], pdworkbookr, pdworkbooke))
 
+            # Process time
+            def convert_dates_to_excel_serial(df: pd.DataFrame) -> pd.DataFrame:
+                df = df.copy()
+                for col in df.columns:
+                    if pd.api.types.is_datetime64_any_dtype(df[col]):
+                        df[col] = (df[col] - pd.Timestamp("1899-12-30")).dt.days
+                return df
+
+            sheet1 = convert_dates_to_excel_serial(sheet1)
+            sheet2 = convert_dates_to_excel_serial(sheet2)
+
             sheet1 = sheet1.round(error_limit)
             sheet2 = sheet2.round(error_limit)
             metric: bool = sheet1.equals(sheet2)
@@ -483,6 +494,23 @@ def compare_csv(result: str, expected: str, **options) -> float:
         expected_lines = map(str.lower, expected_lines)
 
     metric: bool = list(result_lines) == list(expected_lines)
+
+    if not metric:
+        # retry to ignore bom
+        with open(result, encoding="utf-8-sig") as f:
+            result_lines: Iterable[str] = f.read().splitlines()
+        with open(expected, encoding="utf-8-sig") as f:
+            expected_lines: Iterable[str] = f.read().splitlines()
+
+        if not options.get("strict", True):
+            result_lines = map(str.strip, result_lines)
+            expected_lines = map(str.strip, expected_lines)
+        if options.get("ignore_case", False):
+            result_lines = map(str.lower, result_lines)
+            expected_lines = map(str.lower, expected_lines)
+
+        metric: bool = list(result_lines) == list(expected_lines)
+
     return float(metric)
 
 

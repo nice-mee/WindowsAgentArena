@@ -1315,7 +1315,17 @@ def activate_window():
         
         # window: Optional[gw.Window] = None       
         if len(windows) == 0:
-            return "Window {:} not found (empty results)".format(window_name), 404
+
+            def find_window_by_partial_title(partial_title):
+                for win in gw.getAllWindows():
+                    if partial_title.lower() in win.title.lower():
+                        return [win]
+                return []
+
+            windows: List[gw.Window] = find_window_by_partial_title(window_name)
+
+            if len(windows) == 0:
+                return f"Window {window_name} not found (empty results). All windows :{gw.getAllTitles()}", 404
 
         if windows and strict:
             window = windows[0]

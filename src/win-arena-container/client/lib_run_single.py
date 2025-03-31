@@ -57,7 +57,8 @@ def run_single_example(agent, env, example, max_steps, instruction, args, exampl
         except Exception as e:
             print(f"Failed to get token: {e}")
         agent.agent_settings["llm_auth"]["token"] = token
-        agent.agent_settings["task_name"] = example["related_apps"][0] + "/" + example["id"]
+        related_app = example["related_apps"][0] if len(example["related_apps"]) > 0 else "muti_app"
+        agent.agent_settings["task_name"] = related_app + "/" + example["id"]
         logger.info("Agent: Running server agent %s...", agent.agent_name)
         logger.info("Agent settings: %s...", agent.agent_settings)
         response = env.controller.run_agent(agent.agent_name, instruction, agent.agent_settings)
