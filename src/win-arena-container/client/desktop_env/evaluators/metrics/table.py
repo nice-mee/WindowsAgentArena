@@ -33,7 +33,7 @@ def _parse_sheet_idx(sheet_idx: Union[int, str]
                      , result_sheet_names: List[str]
                      , expected_sheet_names: List[str]
                      ) -> Tuple[BOOK, str]:
-    #  function _parse_sheet_idx {{{ # 
+    #  function _parse_sheet_idx {{{ #
     if isinstance(sheet_idx, int):
         try:
             index: str = result_sheet_names[sheet_idx]
@@ -62,14 +62,14 @@ def _parse_sheet_idx(sheet_idx: Union[int, str]
         logger.error("Unrecognized sheet index")
         raise ValueError("Unrecognized sheet index")
     return book, index
-    #  }}} function _parse_sheet_idx # 
+    #  }}} function _parse_sheet_idx #
 
 
 SHEET = Union[pd.DataFrame, Worksheet, List[str]]
 
 
 def _load_sheet(book: BOOK, index: str) -> SHEET:
-    #  function _load_sheet {{{ # 
+    #  function _load_sheet {{{ #
     try:
         if isinstance(book, str):
             book: str = cast(str, book)
@@ -93,11 +93,11 @@ def _load_sheet(book: BOOK, index: str) -> SHEET:
         raise e
     except:
         return None
-    #  }}} function _load_sheet # 
+    #  }}} function _load_sheet #
 
 
 def compare_table(result: str, expected: str = None, **options) -> float:
-    #  function compare_table {{{ # 
+    #  function compare_table {{{ #
     """
     Args:
         result (str): path to result xlsx
@@ -142,13 +142,13 @@ def compare_table(result: str, expected: str = None, **options) -> float:
     passes = True
     for r in options["rules"]:
         if r["type"] == "sheet_name":
-            #  Compare Sheet Names {{{ # 
+            #  Compare Sheet Names {{{ #
             metric: bool = worksheetr_names == worksheete_names
             logger.debug("Assertion: %s.sheet_names == %s.sheet_names - %s", result, expected, metric)
-            #  }}} Compare Sheet Names # 
+            #  }}} Compare Sheet Names #
 
         elif r["type"] == "sheet_data":
-            #  Compare Sheet Data by Internal Value {{{ # 
+            #  Compare Sheet Data by Internal Value {{{ #
             # sheet_idx0: 0 == "RI0" == "RNSheet1" | "EI0" == "ENSheet1"
             # sheet_idx1: as sheet_idx0
             # precision: int as number of decimal digits, default to 4
@@ -158,6 +158,17 @@ def compare_table(result: str, expected: str = None, **options) -> float:
             if sheet1 is None:
                 return 0.
             sheet2: pd.DataFrame = _load_sheet(*parse_idx(r["sheet_idx1"], pdworkbookr, pdworkbooke))
+
+            # Process time
+            def convert_dates_to_excel_serial(df: pd.DataFrame) -> pd.DataFrame:
+                df = df.copy()
+                for col in df.columns:
+                    if pd.api.types.is_datetime64_any_dtype(df[col]):
+                        df[col] = (df[col] - pd.Timestamp("1899-12-30")).dt.days
+                return df
+
+            sheet1 = convert_dates_to_excel_serial(sheet1)
+            sheet2 = convert_dates_to_excel_serial(sheet2)
 
             sheet1 = sheet1.round(error_limit)
             sheet2 = sheet2.round(error_limit)
@@ -169,10 +180,10 @@ def compare_table(result: str, expected: str = None, **options) -> float:
             except:
                 logger.debug("Sheet1 =/v= Sheet2")
             logger.debug("Assertion: %s =v= %s - %s", r["sheet_idx0"], r["sheet_idx1"], metric)
-            #  }}} Compare Sheet Data by Internal Value # 
+            #  }}} Compare Sheet Data by Internal Value #
 
         elif r["type"] == "sheet_print":
-            #  Compare Sheet Data by Printed Value {{{ # 
+            #  Compare Sheet Data by Printed Value {{{ #
             # sheet_idx0: 0 == "RI0" == "RNSheet1" | "EI0" == "ENSheet1"
             # sheet_idx1: as sheet_idx0
             # ignore_case: optional, defaults to False
@@ -186,10 +197,10 @@ def compare_table(result: str, expected: str = None, **options) -> float:
                 sheet2 = [l.lower() for l in sheet2]
             metric: bool = sheet1 == sheet2
             logger.debug("Assertion: %s =p= %s - %s", r["sheet_idx0"], r["sheet_idx1"], metric)
-            #  }}} Compare Sheet Data by Printed Value # 
+            #  }}} Compare Sheet Data by Printed Value #
 
         elif r["type"] == "sheet_fuzzy":
-            #  Fuzzy Match for Ranges {{{ # 
+            #  Fuzzy Match for Ranges {{{ #
             # sheet_idx0: 0 == "RI0" == "RNSheet1" | "EI0" == "ENSheet1"
             # sheet_idx1: as sheet_idx0
             # rules: list of dict, each dict is like
@@ -243,10 +254,10 @@ def compare_table(result: str, expected: str = None, **options) -> float:
 
             metric: bool = total_metric
             logger.debug("Assertion: %s =~= %s - %s", r["sheet_idx0"], r["sheet_idx1"], metric)
-            #  }}} Fuzzy Match for Ranges # 
+            #  }}} Fuzzy Match for Ranges #
 
         elif r["type"] == "sparkline":
-            #  Compare Sparklines {{{ # 
+            #  Compare Sparklines {{{ #
             # sheet_idx0: 0 == "RI0" == "RNSheet1" | "EI0" == "ENSheet1"
             # sheet_idx1: as sheet_idx0
 
@@ -254,10 +265,10 @@ def compare_table(result: str, expected: str = None, **options) -> float:
             sparkline2: Dict[str, str] = load_sparklines(*parse_idx(r["sheet_idx1"], result, expected))
             metric: bool = sparkline1 == sparkline2
             logger.debug("Assertion: %s.sp == %.sp - %s", r["sheet_idx0"], r["sheet_idx1"], metric)
-            #  }}} Compare Sparklines # 
+            #  }}} Compare Sparklines #
 
         elif r["type"] == "chart":
-            #  Compare Charts {{{ # 
+            #  Compare Charts {{{ #
             # sheet_idx0: 0 == "RI0" == "RNSheet1" | "EI0" == "ENSheet1"
             # sheet_idx1: as sheet_idx0
             # chart_props: list of str, see utils.load_charts
@@ -266,14 +277,14 @@ def compare_table(result: str, expected: str = None, **options) -> float:
             charts2: Dict[str, Any] = load_charts(*parse_idx(r["sheet_idx1"], xlworkbookr, xlworkbooke), **r)
             metric: bool = charts1 == charts2
             logger.debug("Assertion: %s[chart] == %s[chart] - %s", r["sheet_idx0"], r["sheet_idx1"], metric)
-            logger.info(f"charts1: {charts1}")            
-            logger.info(f"charts2: {charts2}")            
+            logger.info(f"charts1: {charts1}")
+            logger.info(f"charts2: {charts2}")
 
-            logger.info("Assertion: %s[chart] == %s[chart] - %s", r["sheet_idx0"], r["sheet_idx1"], metric)            
-            #  }}} Compare Charts # 
+            logger.info("Assertion: %s[chart] == %s[chart] - %s", r["sheet_idx0"], r["sheet_idx1"], metric)
+            #  }}} Compare Charts #
 
         elif r["type"] == "style":
-            #  Compare Style (Also Conditional Formatiing) {{{ # 
+            #  Compare Style (Also Conditional Formatiing) {{{ #
             # sheet_idx0: 0 == "RI0" == "RNSheet1" | "EI0" == "ENSheet1"
             # sheet_idx1: as sheet_idx0
             # props: list of str indicating concerned styles, see utils._read_cell_style
@@ -289,10 +300,10 @@ def compare_table(result: str, expected: str = None, **options) -> float:
             # number_formats2: List[str] = [c.number_format.lower() for col in sheet2.iter_cols() for c in col if c.value is not None and c.data_type=="n"]
             metric: bool = styles1 == styles2
             logger.debug("Assertion: %s.style == %s.style - %s", r["sheet_idx0"], r["sheet_idx1"], metric)
-            #  }}} Compare Style (Also Conditional Formatiing) # 
+            #  }}} Compare Style (Also Conditional Formatiing) #
 
         elif r["type"] == "freeze":
-            #  Compare Freezing {{{ # 
+            #  Compare Freezing {{{ #
             # sheet_idx0: 0 == "RI0" == "RNSheet1" | "EI0" == "ENSheet1"
             # sheet_idx1: as sheet_idx0
 
@@ -306,10 +317,10 @@ def compare_table(result: str, expected: str = None, **options) -> float:
                          , r["sheet_idx1"], sheet2.freeze_panes
                          , metric
                          )
-            #  }}} Compare Freezing # 
+            #  }}} Compare Freezing #
 
         elif r["type"] == "zoom":
-            #  Check Zooming {{{ # 
+            #  Check Zooming {{{ #
             # sheet_idx: 0 == "RI0" == "RNSheet1" | "EI0" == "ENSheet1"
             # method: str
             # ref: value
@@ -321,10 +332,10 @@ def compare_table(result: str, expected: str = None, **options) -> float:
             metric: bool = _match_value_to_rule(zoom_scale, r)
             logger.debug("Assertion: %s.zoom(%.1f) %s %.1f - %s", r["sheet_idx"], zoom_scale, r["method"], r["ref"],
                          metric)
-            #  }}} Check Zooming # 
+            #  }}} Check Zooming #
 
         elif r["type"] == "data_validation":
-            #  Check Data Validation {{{ # 
+            #  Check Data Validation {{{ #
             # sheet_idx: 0 == "RI0" == "RNSheet1" | "EI0" == "ENSheet1"
             # dv_props: list of dict like {attribute: {"method": str, "ref": anything}}
             #   available attributes:
@@ -366,10 +377,10 @@ def compare_table(result: str, expected: str = None, **options) -> float:
 
             logger.debug("Assertion: %s.data_validation - %s", r["sheet_idx"], total_metric)
             metric: bool = total_metric
-            #  }}} Check Data Validation # 
+            #  }}} Check Data Validation #
 
         elif r["type"] == "row_props":
-            #  Check Row Properties {{{ # 
+            #  Check Row Properties {{{ #
             # sheet_idx0: 0 == "RI0" == "RNSheet1" | "EI0" == "ENSheet1"
             # sheet_idx1: as sheet_idx0
             # props: list of str, see utils.load_rows_or_cols
@@ -386,10 +397,10 @@ def compare_table(result: str, expected: str = None, **options) -> float:
             logger.debug("Rows2: %s", repr(rows2))
             metric: bool = rows1 == rows2
             logger.debug("Assertion: %s[rows] == %s[rows] - %s", r["sheet_idx0"], r["sheet_idx1"], metric)
-            #  }}} Check Row Properties # 
+            #  }}} Check Row Properties #
 
         elif r["type"] == "col_props":
-            #  Check Row Properties {{{ # 
+            #  Check Row Properties {{{ #
             # sheet_idx0: 0 == "RI0" == "RNSheet1" | "EI0" == "ENSheet1"
             # sheet_idx1: as sheet_idx0
             # props: list of str, see utils.load_rows_or_cols
@@ -404,10 +415,10 @@ def compare_table(result: str, expected: str = None, **options) -> float:
                                                       )
             metric: bool = cols1 == cols2
             logger.debug("Assertion: %s[cols] == %s[cols] - %s", r["sheet_idx0"], r["sheet_idx1"], metric)
-            #  }}} Check Row Properties # 
+            #  }}} Check Row Properties #
 
         elif r["type"] == "filter":
-            #  Compare Filters {{{ # 
+            #  Compare Filters {{{ #
             # sheet_idx0: 0 == "RI0" == "RNSheet1" | "EI0" == "ENSheet1"
             # sheet_idx1: as sheet_idx0
 
@@ -415,10 +426,10 @@ def compare_table(result: str, expected: str = None, **options) -> float:
             filters2: Dict[str, Any] = load_filters(*parse_idx(r["sheet_idx1"], xlworkbookr, xlworkbooke), **r)
             metric: bool = filters1 == filters2
             logger.debug("Assertion: %s[filter] == %s[filter] - %s", r["sheet_idx0"], r["sheet_idx1"], metric)
-            #  }}} Compare Filters # 
+            #  }}} Compare Filters #
 
         elif r["type"] == "pivot_table":
-            #  Compare Pivot Tables {{{ # 
+            #  Compare Pivot Tables {{{ #
             # sheet_idx0: 0 == "RI0" == "RNSheet1" | "EI0" == "ENSheet1"
             # sheet_idx1: as sheet_idx0
             # pivot_props: list of str, see utils.load_pivot_tables
@@ -427,10 +438,10 @@ def compare_table(result: str, expected: str = None, **options) -> float:
             pivots2: Dict[str, Any] = load_pivot_tables(*parse_idx(r["sheet_idx1"], xlworkbookr, xlworkbooke), **r)
             metric: bool = pivots1 == pivots2
             logger.debug("Assertion: %s[pivot]==%s[pivot] - %s", r["sheet_idx0"], r["sheet_idx1"], metric)
-            #  }}} Compare Pivot Tables # 
+            #  }}} Compare Pivot Tables #
 
         elif r["type"] == "check_cell":
-            #  Check Cell Properties {{{ # 
+            #  Check Cell Properties {{{ #
             # sheet_idx: 0 == "RI0" == "RNSheet1" | "EI0" == "ENSheet1"
             # coordinate: str, "E3"
             # props: dict like {attribute: {"method": str, "ref": anything}}
@@ -454,7 +465,7 @@ def compare_table(result: str, expected: str = None, **options) -> float:
                          , r["sheet_idx"], r["coordinate"]
                          , repr(r["props"]), metric
                          )
-            #  }}} Check Cell Properties # 
+            #  }}} Check Cell Properties #
 
         else:
             raise NotImplementedError("Unimplemented sheet check: {:}".format(r["type"]))
@@ -464,7 +475,7 @@ def compare_table(result: str, expected: str = None, **options) -> float:
             break
 
     return float(passes)
-    #  }}} function compare_table # 
+    #  }}} function compare_table #
 
 
 def compare_csv(result: str, expected: str, **options) -> float:
@@ -483,6 +494,23 @@ def compare_csv(result: str, expected: str, **options) -> float:
         expected_lines = map(str.lower, expected_lines)
 
     metric: bool = list(result_lines) == list(expected_lines)
+
+    if not metric:
+        # retry to ignore bom
+        with open(result, encoding="utf-8-sig") as f:
+            result_lines: Iterable[str] = f.read().splitlines()
+        with open(expected, encoding="utf-8-sig") as f:
+            expected_lines: Iterable[str] = f.read().splitlines()
+
+        if not options.get("strict", True):
+            result_lines = map(str.strip, result_lines)
+            expected_lines = map(str.strip, expected_lines)
+        if options.get("ignore_case", False):
+            result_lines = map(str.lower, result_lines)
+            expected_lines = map(str.lower, expected_lines)
+
+        metric: bool = list(result_lines) == list(expected_lines)
+
     return float(metric)
 
 

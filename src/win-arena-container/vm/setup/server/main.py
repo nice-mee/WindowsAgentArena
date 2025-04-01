@@ -8,9 +8,10 @@ from logging.handlers import RotatingFileHandler
 from contextlib import redirect_stdout
 from io import StringIO
 
+
 # Redirect stdout and stderr to log file
 class Logger(object):
-    def __init__(self,logger):
+    def __init__(self, logger):
         self.logger = logger
         self.stdout = sys.stdout
         sys.stdout = self
@@ -21,6 +22,7 @@ class Logger(object):
 
     def __del__(self):
         sys.stdout = self.stdout
+
     def write(self, data):
         if data != '\n':
             self.msg += data
@@ -28,6 +30,7 @@ class Logger(object):
             self.logger.info(self.msg)
             self.msg = ""
         self.stdout.write(data)
+
     def flush(self):
         self.stdout.flush()
 
@@ -35,7 +38,7 @@ class Logger(object):
     def excepthook(self, exctype, value, traceback):
         self.logger.error("Uncaught exception", exc_info=(exctype, value, traceback))
         self.stdout.excepthook(exctype, value, traceback)
-    
+
     # log errors
     def error(self, msg):
         self.logger.error(msg)
@@ -43,16 +46,17 @@ class Logger(object):
 
 # Flask logging
 import argparse
+
 parser = argparse.ArgumentParser()
 parser.add_argument("--log_file", help="log file path", type=str,
                     default=os.path.join(os.path.dirname(__file__), "server.log"))
-#port
+# port
 parser.add_argument("--port", help="port", type=int, default=5000)
 
 args = parser.parse_args()
 log_file = args.log_file
 
-logging.basicConfig(filename='server.log',level=logging.DEBUG, filemode='w' )
+logging.basicConfig(filename='server.log', level=logging.DEBUG, filemode='w')
 
 # logging.basicConfig(filename=log_file,level=logging.INFO, filemode='w' )
 logger = logging.getLogger('werkzeug')
@@ -80,7 +84,7 @@ import time
 
 platform_name: str = platform.system()
 
-if platform_name=="Linux":
+if platform_name == "Linux":
     import pyatspi
     from pyatspi import Accessible, StateType, STATE_SHOWING
     from pyatspi import Action as ATAction
@@ -89,7 +93,7 @@ if platform_name=="Linux":
     from pyatspi import Value as ATValue
 
     BaseWrapper = Any
-elif platform_name=="Windows":
+elif platform_name == "Windows":
     from pywinauto import Desktop
     from pywinauto.base_wrapper import BaseWrapper
 
@@ -97,11 +101,11 @@ elif platform_name=="Windows":
 
 from pyxcursor import Xcursor
 
-
 from computer import Computer, WindowManager
 # global computer
 
 from human import Human
+
 human = Human()
 
 app = Flask(__name__)
@@ -114,11 +118,12 @@ computer = Computer(logger)
 recording_process = None  # fixme: this is a temporary solution for recording, need to be changed to support multiple-process
 
 recording_path = os.path.join(os.path.dirname(__file__), "recordings")
-#create tmp directory if not exists
+# create tmp directory if not exists
 os.makedirs(recording_path, exist_ok=True)
 recording_path = os.path.join(recording_path, "recording.mp4")
 
 print("recording dir set to", recording_path)
+
 
 # recording_path = "/tmp/recording.mp4"
 
@@ -127,78 +132,78 @@ def handle_exception(e):
     logger.error("\n" + traceback.format_exc() + "\n")
 
     return jsonify({"status": "error", "message": str(e)}), 500
-  
-@app.route('/update_computer', methods=['POST'])  
-def update_computer(): 
+
+
+@app.route('/update_computer', methods=['POST'])
+def update_computer():
     print("STARTED UPDATING COMPUTER")
     # print(request)
-    data = request.json  # get data from POST request  
-    
+    data = request.json  # get data from POST request
+
     # print(data)
 
-    rects = data.get('rects')  
-     
-    window_rect = data.get('window_rect')  
+    rects = data.get('rects')
 
-    
+    window_rect = data.get('window_rect')
 
-    import base64  
-    from PIL import Image  
-    import io  
+    import base64
+    from PIL import Image
+    import io
 
-    def base64_str_to_image(img_str):  
-        img_bytes = base64.b64decode(img_str)  
-        img = Image.open(io.BytesIO(img_bytes))  
-        return img  
+    def base64_str_to_image(img_str):
+        img_bytes = base64.b64decode(img_str)
+        img = Image.open(io.BytesIO(img_bytes))
+        return img
 
-    screenshot_str = data.get('screenshot')  
-    screenshot = base64_str_to_image(screenshot_str)  
+    screenshot_str = data.get('screenshot')
+    screenshot = base64_str_to_image(screenshot_str)
     # screenshot.save("//host.lan/Data/models/test.png")
 
-    scale = data.get('scale')  
-    clipboard_content = data.get('clipboard_content')  
-    swap_ctrl_alt = data.get('swap_ctrl_alt', False)  
-    computer.update(rects=rects, window_rect=window_rect, screenshot=screenshot, scale=scale, clipboard_content=clipboard_content, swap_ctrl_alt=swap_ctrl_alt)  
+    scale = data.get('scale')
+    clipboard_content = data.get('clipboard_content')
+    swap_ctrl_alt = data.get('swap_ctrl_alt', False)
+    computer.update(rects=rects, window_rect=window_rect, screenshot=screenshot, scale=scale,
+                    clipboard_content=clipboard_content, swap_ctrl_alt=swap_ctrl_alt)
     print("mouse window rect", computer.mouse.window_rect)
     print("FINISHED UPDATING COMPUTER")
-    return jsonify(success=True)  # Return a success message  
+    return jsonify(success=True)  # Return a success message
 
 
-@app.route('/execute_windows', methods=['POST'])  
-def execute_command_windows():  
-    # data = request.json 
-    data = request.get_json() 
-    # shell = data.get('shell', False)  
-    command = data.get('command')  
+@app.route('/execute_windows', methods=['POST'])
+def execute_command_windows():
+    # data = request.json
+    data = request.get_json()
+    # shell = data.get('shell', False)
+    command = data.get('command')
     print(command)
 
-    try:  
-        # exec(command_with_computer)  
+    try:
+        # exec(command_with_computer)
         # exec(command_with_computer, globals())  # Use globals() to make 'computer' available in exec()
-        
+
         f = StringIO()
         with redirect_stdout(f):
-            exec(command, {'computer': computer, 'human': human})  
+            exec(command, {'computer': computer, 'human': human})
         s = f.getvalue()
         if "error" in s.lower():
             raise Exception(s)
-        
-        return jsonify({  
-            'status': 'success',  
-        })  
+
+        return jsonify({
+            'status': 'success',
+        })
     except Exception as e:
         logger.error(f"Failed to execute command: {command}. Error: {e}")
         logger.error("\n" + traceback.format_exc() + "\n")
 
-        return jsonify({  
-            'status': 'error',  
-            'message': str(e)  
-        }), 500  
-    
+        return jsonify({
+            'status': 'error',
+            'message': str(e)
+        }), 500
+
+
 @app.route('/setup/execute', methods=['POST'])
 @app.route('/execute', methods=['POST'])
 def execute_command():
-    
     data = request.json
     # The 'command' key in the JSON request should contain the command to be executed.
     shell = data.get('shell', False)
@@ -214,7 +219,8 @@ def execute_command():
 
     # Execute the command without any safety checks.
     try:
-        result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=shell, text=True, timeout=120)
+        result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=shell, text=True,
+                                timeout=120)
         return jsonify({
             'status': 'success',
             'output': result.stdout,
@@ -233,7 +239,7 @@ def execute_command():
         #     'shell': str(shell),
         #     'command': command,
         #     'data': data
-        # }), 500    
+        # }), 500
 
 
 def _get_machine_architecture() -> str:
@@ -247,10 +253,12 @@ def _get_machine_architecture() -> str:
     else:
         return 'unknown'
 
+
 @app.route('/probe', methods=['GET'])
 def probe_endpoint():
     # This endpoint simply returns a status 200 response with a custom message
     return jsonify({"status": "Probe successful", "message": "Service is operational"}), 200
+
 
 # Used with the --prepare-image flag gracefully shutdown the VM at the first setup
 @app.route('/shutdown', methods=['POST'])
@@ -261,10 +269,11 @@ def shutdown_endpoint():
 
     return jsonify({"status": "Shutdown started successfully", "message": "Shutdown started successfully"}), 200
 
+
 @app.route('/setup/launch', methods=["POST"])
 def launch_app():
     data = request.json
-    # log the request data 
+    # log the request data
     logger.info('/setup/launch')
     logger.info(data)
     shell = data.get("shell", False)
@@ -286,23 +295,21 @@ def launch_app():
             index = command.index('google-chrome')
             command[index] = 'chrome'
 
-
         if 'google-chrome' in command and _get_machine_architecture() == 'arm':
             index = command.index('google-chrome')
-            command[index] = 'chromium-browser' # arm64 chrome is not available yet, can only use chromium
+            command[index] = 'chromium-browser'  # arm64 chrome is not available yet, can only use chromium
         subprocess.Popen(command, shell=shell)
         return "{:} launched successfully".format(command if shell else " ".join(command))
     except Exception as e:
-        
 
         logger.error("\n" + traceback.format_exc() + "\n")
         # return jsonify({"status": "error", "message": str(e)}), 500
-        return jsonify({"status": "error", 
+        return jsonify({"status": "error",
                         "message": str(e),
                         'shell': str(shell),
                         'command': command,
                         'data': data
-                        }), 500    
+                        }), 500
 
 
 @app.route('/screenshot', methods=['GET'])
@@ -376,29 +383,32 @@ def get_terminal_output():
         logger.error("\n" + traceback.format_exc() + "\n")
         return jsonify({"status": "error", "message": str(e)}), 500
 
+
 import win32gui
-from screeninfo import get_monitors 
+from screeninfo import get_monitors
 from PIL import ImageGrab
 import io
-import base64  
-def obs_winagent():      
+import base64
+
+
+def obs_winagent():
     window = win32gui.GetForegroundWindow()
-    try:    
+    try:
         window_title = pyautogui.getActiveWindowTitle()
     except Exception as e:
-        window_title = '' # no window title active
+        window_title = ''  # no window title active
 
-    if window_title=='Program Manager' or window_title=='':    
-        monitors = get_monitors()  
-        for monitor in monitors:  
-            if monitor.is_primary:  
-                main_monitor = monitor  
-                break  
-        rect = (main_monitor.x, main_monitor.y, main_monitor.width, main_monitor.height)    
-        window_title = "Desktop"    
-    else:    
-        rect = win32gui.GetWindowRect(window)  # x0, y0, x1, y1 from the screen in global coordinates  
-    image = ImageGrab.grab(rect)    
+    if window_title == 'Program Manager' or window_title == '':
+        monitors = get_monitors()
+        for monitor in monitors:
+            if monitor.is_primary:
+                main_monitor = monitor
+                break
+        rect = (main_monitor.x, main_monitor.y, main_monitor.width, main_monitor.height)
+        window_title = "Desktop"
+    else:
+        rect = win32gui.GetWindowRect(window)  # x0, y0, x1, y1 from the screen in global coordinates
+    image = ImageGrab.grab(rect)
     window_manager = WindowManager()
     window_names = window_manager.find_open_applications()
     window_names_str = "\n".join(window_names)
@@ -408,45 +418,47 @@ def obs_winagent():
         computer_clipboard = None
     human_input = human.get_past_input()
     return image, window_title, rect, window_names_str, computer_clipboard, human_input
-    
+
+
 @app.route('/obs_winagent', methods=['GET'])
 def get_obs_winagent():
-    try:  
-        image, window_title, rect, window_names_str, computer_clipboard, human_input = obs_winagent()  
-        img_bytes = io.BytesIO()  
-        image.save(img_bytes, format='PNG')  
-        img_bytes.seek(0)  
-        img_base64 = base64.b64encode(img_bytes.read()).decode('utf-8')  
-        return jsonify({"image": img_base64, "window_title": window_title, "rect": rect, "window_names_str": window_names_str, "computer_clipboard": computer_clipboard, "human_input": human_input, "status": "success"})  
-    except Exception as e:  
+    try:
+        image, window_title, rect, window_names_str, computer_clipboard, human_input = obs_winagent()
+        img_bytes = io.BytesIO()
+        image.save(img_bytes, format='PNG')
+        img_bytes.seek(0)
+        img_base64 = base64.b64encode(img_bytes.read()).decode('utf-8')
+        return jsonify(
+            {"image": img_base64, "window_title": window_title, "rect": rect, "window_names_str": window_names_str,
+             "computer_clipboard": computer_clipboard, "human_input": human_input, "status": "success"})
+    except Exception as e:
         logger.error("Failed to get OBS window agent. Error: %s", e)
         logger.error("\n" + traceback.format_exc() + "\n")
-        return jsonify({"status": "error", "message": str(e)}), 500  
+        return jsonify({"status": "error", "message": str(e)}), 500
 
 
-
-_accessibility_ns_map = { "st": "uri:deskat:state.at-spi.gnome.org"
-                        , "attr": "uri:deskat:attributes.at-spi.gnome.org"
-                        , "cp": "uri:deskat:component.at-spi.gnome.org"
-                        , "doc": "uri:deskat:document.at-spi.gnome.org"
-                        , "docattr": "uri:deskat:attributes.document.at-spi.gnome.org"
-                        , "txt": "uri:deskat:text.at-spi.gnome.org"
-                        , "val": "uri:deskat:value.at-spi.gnome.org"
-                        , "act": "uri:deskat:action.at-spi.gnome.org"
-                        , "win": "uri:deskat:uia.windows.microsoft.org"
-                        }
+_accessibility_ns_map = {"st": "uri:deskat:state.at-spi.gnome.org"
+    , "attr": "uri:deskat:attributes.at-spi.gnome.org"
+    , "cp": "uri:deskat:component.at-spi.gnome.org"
+    , "doc": "uri:deskat:document.at-spi.gnome.org"
+    , "docattr": "uri:deskat:attributes.document.at-spi.gnome.org"
+    , "txt": "uri:deskat:text.at-spi.gnome.org"
+    , "val": "uri:deskat:value.at-spi.gnome.org"
+    , "act": "uri:deskat:action.at-spi.gnome.org"
+    , "win": "uri:deskat:uia.windows.microsoft.org"
+                         }
 
 
 def _create_atspi_node(node: Accessible, depth: int = 0, flag: Optional[str] = None) -> _Element:
-    #  function _create_atspi_node {{{ # 
+    #  function _create_atspi_node {{{ #
     if node.getRoleName() == "document spreadsheet":
         flag = "calc"
-    if node.getRoleName() == "application" and node.name=="Thunderbird":
+    if node.getRoleName() == "application" and node.name == "Thunderbird":
         flag = "thunderbird"
 
     attribute_dict: Dict[str, Any] = {"name": node.name}
 
-    #  States {{{ # 
+    #  States {{{ #
     states: List[StateType] = node.getState().get_states()
     for st in states:
         state_name: str = StateType._enum_lookup[st]
@@ -454,9 +466,9 @@ def _create_atspi_node(node: Accessible, depth: int = 0, flag: Optional[str] = N
             continue
         attribute_dict[
             "{{{:}}}{:}".format(_accessibility_ns_map["st"], state_name.split("_", maxsplit=1)[1].lower())] = "true"
-    #  }}} States # 
+    #  }}} States #
 
-    #  Attributes {{{ # 
+    #  Attributes {{{ #
     attributes: List[str] = node.getAttributes()
     for attrbt in attributes:
         attribute_name: str
@@ -465,9 +477,9 @@ def _create_atspi_node(node: Accessible, depth: int = 0, flag: Optional[str] = N
         if len(attribute_name) == 0:
             continue
         attribute_dict["{{{:}}}{:}".format(_accessibility_ns_map["attr"], attribute_name)] = attribute_value
-    #  }}} Attributes # 
+    #  }}} Attributes #
 
-    #  Component {{{ # 
+    #  Component {{{ #
     try:
         component: Component = node.queryComponent()
     except NotImplementedError:
@@ -480,9 +492,9 @@ def _create_atspi_node(node: Accessible, depth: int = 0, flag: Optional[str] = N
         attribute_dict["{{{:}}}parentcoord".format(_accessibility_ns_map["cp"])] = str(
             component.getPosition(pyatspi.XY_PARENT))
         attribute_dict["{{{:}}}size".format(_accessibility_ns_map["cp"])] = str(component.getSize())
-    #  }}} Component # 
+    #  }}} Component #
 
-    #  Document {{{ # 
+    #  Document {{{ #
     try:
         document: Document = node.queryDocument()
     except NotImplementedError:
@@ -498,9 +510,9 @@ def _create_atspi_node(node: Accessible, depth: int = 0, flag: Optional[str] = N
             if len(attribute_name) == 0:
                 continue
             attribute_dict["{{{:}}}{:}".format(_accessibility_ns_map["docattr"], attribute_name)] = attribute_value
-    #  }}} Document # 
+    #  }}} Document #
 
-    #  Text {{{ # 
+    #  Text {{{ #
     try:
         text_obj: ATText = node.queryText()
     except NotImplementedError:
@@ -509,33 +521,33 @@ def _create_atspi_node(node: Accessible, depth: int = 0, flag: Optional[str] = N
         # only text shown on current screen is available
         # attribute_dict["txt:text"] = text_obj.getText(0, text_obj.characterCount)
         text: str = text_obj.getText(0, text_obj.characterCount)
-        #if flag=="thunderbird":
+        # if flag=="thunderbird":
         # appeard in thunderbird (uFFFC) (not only in thunderbird), "Object
         # Replacement Character" in Unicode, "used as placeholder in text for
         # an otherwise unspecified object; uFFFD is another "Replacement
         # Character", just in case
         text = text.replace("\ufffc", "").replace("\ufffd", "")
-    #  }}} Text # 
+    #  }}} Text #
 
-    #  Image {{{ # 
+    #  Image {{{ #
     try:
         node.queryImage()
     except NotImplementedError:
         pass
     else:
         attribute_dict["image"] = "true"
-    #  }}} Image # 
+    #  }}} Image #
 
-    #  Selection {{{ # 
+    #  Selection {{{ #
     try:
         node.querySelection()
     except NotImplementedError:
         pass
     else:
         attribute_dict["selection"] = "true"
-    #  }}} Selection # 
+    #  }}} Selection #
 
-    #  Value {{{ # 
+    #  Value {{{ #
     try:
         value: ATValue = node.queryValue()
     except NotImplementedError:
@@ -557,9 +569,9 @@ def _create_atspi_node(node: Accessible, depth: int = 0, flag: Optional[str] = N
             attribute_dict["{{{:}}}step".format(_accessibility_ns_map["val"])] = str(value.minimumIncrement)
         except:
             pass
-    #  }}} Value # 
+    #  }}} Value #
 
-    #  Action {{{ # 
+    #  Action {{{ #
     try:
         action: ATAction = node.queryAction()
     except NotImplementedError:
@@ -593,11 +605,11 @@ def _create_atspi_node(node: Accessible, depth: int = 0, flag: Optional[str] = N
         xml_node.text = text
 
     # HYPERPARAMETER
-    if depth==50:
+    if depth == 50:
         logger.warning("Max depth reached")
         return xml_node
 
-    if flag=="calc" and node_role_name=="table":
+    if flag == "calc" and node_role_name == "table":
         # Maximum column: 1024 if ver<=7.3 else 16384
         # Maximum row: 104 8576
         # Maximun sheet: 1 0000
@@ -605,26 +617,26 @@ def _create_atspi_node(node: Accessible, depth: int = 0, flag: Optional[str] = N
         version_str: str = subprocess.run("libreoffice --version", shell=True, text=True, stdout=subprocess.PIPE).stdout
         version_str = version_str.split()[1]
         version_tuple: Tuple[int] = tuple(map(int, version_str.split(".")))
-        MAXIMUN_COLUMN = 1024 if version_tuple<(7, 4) else 16384
+        MAXIMUN_COLUMN = 1024 if version_tuple < (7, 4) else 16384
         MAX_ROW = 104_8576
 
         index_base = 0
         first_showing = False
         column_base = None
         for r in range(MAX_ROW):
-            #logger.warning(r)
+            # logger.warning(r)
             for clm in range(column_base or 0, MAXIMUN_COLUMN):
-                child_node: Accessible = node[index_base+clm]
+                child_node: Accessible = node[index_base + clm]
                 showing: bool = child_node.getState().contains(STATE_SHOWING)
                 if showing:
-                    child_node: _Element = _create_atspi_node(child_node, depth+1, flag)
+                    child_node: _Element = _create_atspi_node(child_node, depth + 1, flag)
                     if not first_showing:
                         column_base = clm
                         first_showing = True
                     xml_node.append(child_node)
-                elif first_showing and column_base is not None or clm>=500:
+                elif first_showing and column_base is not None or clm >= 500:
                     break
-            if first_showing and clm==column_base or not first_showing and r>=500:
+            if first_showing and clm == column_base or not first_showing and r >= 500:
                 break
             index_base += MAXIMUN_COLUMN
         return xml_node
@@ -632,21 +644,23 @@ def _create_atspi_node(node: Accessible, depth: int = 0, flag: Optional[str] = N
         try:
             for i, ch in enumerate(node):
                 # HYPERPARAMETER
-                if i>=1025:
+                if i >= 1025:
                     logger.warning("Max width reached")
                     break
-                xml_node.append(_create_atspi_node(ch, depth+1, flag))
+                xml_node.append(_create_atspi_node(ch, depth + 1, flag))
         except:
-            logger.warning("Error occurred during children traversing. Has Ignored. Node: %s", lxml.etree.tostring(xml_node, encoding="unicode"))
+            logger.warning("Error occurred during children traversing. Has Ignored. Node: %s",
+                           lxml.etree.tostring(xml_node, encoding="unicode"))
         return xml_node
-    #  }}} function _create_atspi_node # 
+    #  }}} function _create_atspi_node #
+
 
 def _create_pywinauto_node(node: BaseWrapper, depth: int = 0, flag: Optional[str] = None) -> _Element:
-    #  function _create_pywinauto_node {{{ # 
-    #element_info: ElementInfo = node.element_info
+    #  function _create_pywinauto_node {{{ #
+    # element_info: ElementInfo = node.element_info
     attribute_dict: Dict[str, Any] = {"name": node.element_info.name}
 
-    #  States {{{ # 
+    #  States {{{ #
     try:
         attribute_dict["{{{:}}}enabled".format(_accessibility_ns_map["st"])] = str(node.is_enabled()).lower()
     except:
@@ -704,7 +718,8 @@ def _create_pywinauto_node(node: BaseWrapper, depth: int = 0, flag: Optional[str
             pass
     if hasattr(node, "is_keyboard_focused"):
         try:
-            attribute_dict["{{{:}}}keyboard_focused".format(_accessibility_ns_map["st"])] = str(node.is_keyboard_focused()).lower()
+            attribute_dict["{{{:}}}keyboard_focused".format(_accessibility_ns_map["st"])] = str(
+                node.is_keyboard_focused()).lower()
         except:
             pass
     if hasattr(node, "is_selected"):
@@ -714,7 +729,8 @@ def _create_pywinauto_node(node: BaseWrapper, depth: int = 0, flag: Optional[str
             pass
     if hasattr(node, "is_selection_required"):
         try:
-            attribute_dict["{{{:}}}selection_required".format(_accessibility_ns_map["st"])] = str(node.is_selection_required()).lower()
+            attribute_dict["{{{:}}}selection_required".format(_accessibility_ns_map["st"])] = str(
+                node.is_selection_required()).lower()
         except:
             pass
     if hasattr(node, "is_pressable"):
@@ -738,31 +754,33 @@ def _create_pywinauto_node(node: BaseWrapper, depth: int = 0, flag: Optional[str
             attribute_dict["{{{:}}}editable".format(_accessibility_ns_map["st"])] = str(node.is_editable()).lower()
         except:
             pass
-    #  }}} States # 
+    #  }}} States #
 
-    #  Component {{{ # 
+    #  Component {{{ #
     rectangle = node.rectangle()
-    attribute_dict["{{{:}}}screencoord".format(_accessibility_ns_map["cp"])] = "({:d}, {:d})".format(rectangle.left, rectangle.top)
-    attribute_dict["{{{:}}}size".format(_accessibility_ns_map["cp"])] = "({:d}, {:d})".format(rectangle.width(), rectangle.height())
-    #  }}} Component # 
+    attribute_dict["{{{:}}}screencoord".format(_accessibility_ns_map["cp"])] = "({:d}, {:d})".format(rectangle.left,
+                                                                                                     rectangle.top)
+    attribute_dict["{{{:}}}size".format(_accessibility_ns_map["cp"])] = "({:d}, {:d})".format(rectangle.width(),
+                                                                                              rectangle.height())
+    #  }}} Component #
 
-    #  Text {{{ # 
+    #  Text {{{ #
     text: str = node.window_text()
-    if text==attribute_dict["name"]:
+    if text == attribute_dict["name"]:
         text = ""
-    #if hasattr(node, "texts"):
-        #texts: List[str] = node.texts()[1:]
-        #texts: Iterable[str] = map(lambda itm: itm if isinstance(itm, str) else "".join(itm), texts)
-    #text += "\n".join(texts)
-    #text = text.strip()
-    #  }}} Text # 
+    # if hasattr(node, "texts"):
+    # texts: List[str] = node.texts()[1:]
+    # texts: Iterable[str] = map(lambda itm: itm if isinstance(itm, str) else "".join(itm), texts)
+    # text += "\n".join(texts)
+    # text = text.strip()
+    #  }}} Text #
 
-    #  Selection {{{ # 
+    #  Selection {{{ #
     if hasattr(node, "select"):
         attribute_dict["selection"] = "true"
-    #  }}} Selection # 
+    #  }}} Selection #
 
-    #  Value {{{ # 
+    #  Value {{{ #
     if hasattr(node, "get_step"):
         try:
             attribute_dict["{{{:}}}step".format(_accessibility_ns_map["val"])] = str(node.get_step())
@@ -803,18 +821,18 @@ def _create_pywinauto_node(node: BaseWrapper, depth: int = 0, flag: Optional[str
             attribute_dict["{{{:}}}max".format(_accessibility_ns_map["val"])] = str(node.get_range_max())
         except:
             pass
-    #  }}} Value # 
+    #  }}} Value #
 
     attribute_dict["{{{:}}}class".format(_accessibility_ns_map["win"])] = str(type(node))
 
     node_role_name: str = node.class_name().lower().replace(" ", "-")
-    node_role_name = "".join( map( lambda ch: ch if ch.isidentifier()\
-                                                 or ch in {"-"}\
-                                                 or ch.isalnum()
-                                               else "-"
+    node_role_name = "".join(map(lambda ch: ch if ch.isidentifier() \
+                                                  or ch in {"-"} \
+                                                  or ch.isalnum()
+    else "-"
                                  , node_role_name
                                  )
-                            )
+                             )
     if node_role_name.strip() == "":
         node_role_name = "unknown"
     if not node_role_name[0].isalpha():
@@ -825,24 +843,25 @@ def _create_pywinauto_node(node: BaseWrapper, depth: int = 0, flag: Optional[str
         attrib=attribute_dict,
         nsmap=_accessibility_ns_map
     )
-    if text is not None and len(text)>0 and text!=attribute_dict["name"]:
+    if text is not None and len(text) > 0 and text != attribute_dict["name"]:
         xml_node.text = text
 
     # HYPERPARAMETER
-    if depth==50:
+    if depth == 50:
         logger.warning("Max depth reached")
-        #print("Max depth reached")
+        # print("Max depth reached")
         return xml_node
 
     for i, ch in enumerate(node.children()):
         # HYPERPARAMETER
-        if i>=2048:
+        if i >= 2048:
             logger.warning("Max width reached")
-            #print("Max width reached")
+            # print("Max width reached")
             break
-        xml_node.append(_create_pywinauto_node(ch, depth+1, flag))
+        xml_node.append(_create_pywinauto_node(ch, depth + 1, flag))
     return xml_node
-    #  }}} function _create_pywinauto_node # 
+    #  }}} function _create_pywinauto_node #
+
 
 @app.route("/accessibility", methods=["GET"])
 def get_accessibility_tree():
@@ -874,11 +893,11 @@ def get_accessibility_tree():
 
 @app.route('/screen_size', methods=['POST'])
 def get_screen_size():
-    if platform_name=="Linux":
+    if platform_name == "Linux":
         d = display.Display()
         screen_width = d.screen().width_in_pixels
         screen_height = d.screen().height_in_pixels
-    elif platform_name=="Windows":
+    elif platform_name == "Windows":
         user32 = ctypes.windll.user32
         screen_width: int = user32.GetSystemMetrics(0)
         screen_height: int = user32.GetSystemMetrics(1)
@@ -921,6 +940,7 @@ def get_window_size():
             continue
     return None
 
+
 @app.route('/desktop_path', methods=['POST'])
 def get_desktop_path():
     # Get the home directory in a platform-independent manner using pathlib
@@ -938,6 +958,7 @@ def get_desktop_path():
         return jsonify(desktop_path=desktop_path)
     else:
         return jsonify(error="Unsupported operating system or desktop path not found"), 404
+
 
 @app.route('/documents_path', methods=['POST'])
 def get_documents_path():
@@ -957,6 +978,7 @@ def get_documents_path():
     else:
         return jsonify(error="Unsupported operating system or documents path not found"), 400
 
+
 @app.route('/setup/create_folder', methods=['POST'])
 def create_folder():
     data = request.json
@@ -972,7 +994,8 @@ def create_folder():
         return jsonify({'status': 'success', 'message': f'{path} already exists.'}), 200
     except Exception as e:
         return jsonify({'status': 'error', 'message': f'Failed to create {path}.'}), 400
-    
+
+
 @app.route('/setup/create_file', methods=['POST'])
 def create_file():
     """
@@ -983,21 +1006,21 @@ def create_file():
     print(data)
     if "path" not in data:
         return jsonify({"error": "path required"}), 400
-    
+
     # Absolute path to the file
     path = Path(data["path"]).resolve()
     print("Resolved path:", path)
 
     if path.is_dir():
         return jsonify({"status": "error", "message": "path is not a file"}), 400
-    
+
     content = data.get("content", "")
     try:
         root_path = path.parent
         if str(root_path) == "":
             root_path = get_desktop_path()
             path = os.path.join(root_path, path.name)
-        
+
         os.makedirs(root_path, exist_ok=True)
         with open(path, "w") as f:
             f.write(content)
@@ -1005,7 +1028,8 @@ def create_file():
     except Exception as e:
         print(e)
         return jsonify({'status': 'error', 'message': f'Failed to create {path}.'}), 400
-    
+
+
 @app.route("/setup/recycle", methods=["POST"])
 def recycle_file():
     data = request.json
@@ -1016,7 +1040,8 @@ def recycle_file():
         return jsonify({"status": "success", "message": f"{data['path']} recycled"}), 200
     except:
         return jsonify({"status": "error", "message": f"Failed to recycle {data['path']}"}), 400
-    
+
+
 @app.route('/folder_exists', methods=['POST'])
 def get_folder_exists():
     data = request.json
@@ -1034,6 +1059,7 @@ def get_folder_exists():
     else:
         return jsonify({'status': 'error', 'message': f'Folder {folder_name} does not exist in {path}.'}), 400
 
+
 @app.route('/file_exists', methods=['POST'])
 def get_file_exists():
     data = request.json
@@ -1050,21 +1076,25 @@ def get_file_exists():
     else:
         return jsonify({'status': 'error', 'message': f'File {file_name} does not exist in {path}.'}), 400
 
+
 @app.route('/is_details_view', methods=['POST'])
 def get_file_explorer_is_details_view():
     data = request.json
     if "path" not in data:
         return jsonify({"error": "path is required"}), 400
-    
+
     path = data["path"]
-    
+
     import uiautomation_utils
     is_details = uiautomation_utils.is_file_explorer_details_view(path)
-    
+
     if is_details:
-        return jsonify({'status': 'success', 'message': 'File Explorer is in Details view', 'is_details_view': True}), 200
+        return jsonify(
+            {'status': 'success', 'message': 'File Explorer is in Details view', 'is_details_view': True}), 200
     else:
-        return jsonify({'status': 'error', 'message': 'File Explorer is not in Details view', 'is_details_view': False}), 400
+        return jsonify(
+            {'status': 'error', 'message': 'File Explorer is not in Details view', 'is_details_view': False}), 400
+
 
 @app.route('/wallpaper', methods=['POST'])
 def get_wallpaper():
@@ -1116,7 +1146,7 @@ def get_wallpaper():
         except Exception as e:
             logger.error(f"An error occurred while serving the wallpaper file: {e}")
             logger.error("\n" + traceback.format_exc() + "\n")
-            
+
             abort(500, description="Unable to serve the wallpaper file")
     else:
         abort(404, description="Wallpaper file not found")
@@ -1312,10 +1342,20 @@ def activate_window():
             return "Get window by class name is currently not supported on Windows.", 500
 
         windows: List[gw.Window] = gw.getWindowsWithTitle(window_name)
-        
-        # window: Optional[gw.Window] = None       
+
+        # window: Optional[gw.Window] = None
         if len(windows) == 0:
-            return "Window {:} not found (empty results)".format(window_name), 404
+
+            def find_window_by_partial_title(partial_title):
+                for win in gw.getAllWindows():
+                    if partial_title.lower() in win.title.lower():
+                        return [win]
+                return []
+
+            windows: List[gw.Window] = find_window_by_partial_title(window_name)
+
+            if len(windows) == 0:
+                return f"Window {window_name} not found (empty results). All windows :{gw.getAllTitles()}", 404
 
         if windows and strict:
             window = windows[0]
@@ -1323,14 +1363,14 @@ def activate_window():
             time.sleep(1)
             window.restore()
             time.sleep(1)
-            
+
             assert window.isActive
             # return f"ACTIVE? {window.title} is {window.isActive} active"
-    
+
         # windows = []
         # for w in gw.getAllWindows():
         #     windows.append(w.title)
-                
+
         # window: Optional[gw.Window] = None
         # if len(windows) == 0:
         #     return "Window {:} not found (empty results)".format(window_name), 404
@@ -1397,28 +1437,29 @@ def clear_task_files():
 
         # path_to_rm = os.path.join("C:", "Users", "Docker", "Downloads")
         path_to_rm = "C:\\Users\\Docker\\Downloads"
+
         def remove_files_in_path(path):
             """
             Remove all files in the specified path to avoid clutter build-up or interference with later tasks
             """
-            files = glob.glob(path + "\\*")    
+            files = glob.glob(path + "\\*")
             files_present = os.listdir(path)
 
             rm_files = []
             rm_fail = []
             for file in files:
                 if file != "C:\\Users\\Docker\\Downloads\\desktop.ini":
-                    try:  
+                    try:
                         os.remove(file)
-                        rm_files.append(file)  
-                    except OSError as e:  
-                        # print("Error: %s : %s" % (file, e.strerror)) 
+                        rm_files.append(file)
+                    except OSError as e:
+                        # print("Error: %s : %s" % (file, e.strerror))
                         rm_fail.append(file)
 
             return rm_files, rm_fail
 
         rmed_files, failed_files = remove_files_in_path(path_to_rm)
-           
+
     elif os_name == "Linux":
         return "Currently not supported on Linux.", 500
     elif os_name == "Darwin":
@@ -1435,6 +1476,7 @@ def clear_task_files():
     if not failed_files and not rmed_files:
         return f"No task files to clear from {repr(path_to_rm)}.", 200
 
+
 @app.route("/setup/close_all", methods=["POST"])
 def close_all_windows():
     os_name = platform.system()
@@ -1448,13 +1490,19 @@ def close_all_windows():
 
         for window in gw.getAllWindows():
             if window.title != "Program Manager" and window.title != "" and \
-                window.title != "Administrator: C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe":
+                    window.title != "Administrator: C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe":
                 window.close()
-            
+
+        # Close forcelly
+        app_names = ["WINWORD.EXE", "EXCEL.EXE", "POWERPNT.EXE"]
+        for app_name in app_names:
+            os.system(f"taskkill /f /im {app_name}")
+            time.sleep(1)
+
         # for window in gw.getAllWindows():
         #     if window.title != "Program Manager" and window.title != "":
         #         window.close()
-                
+
     elif os_name == "Linux":
         subprocess.run(["wmctrl", "-c", ":ALL:"], stdout=subprocess.DEVNULL)
     elif os_name == "Darwin":
@@ -1464,6 +1512,7 @@ def close_all_windows():
         return "Not supported platform {:}".format(os_name), 500
 
     return "All windows closed successfully.", 200
+
 
 @app.route("/setup/close_window", methods=["POST"])
 def close_window():
@@ -1524,16 +1573,20 @@ def start_recording():
 
         start_command = f"ffmpeg -y -f x11grab -draw_mouse 1 -s {screen_width}x{screen_height} -i :0.0 -pix_fmt yuv420p -c:v libx264 -r 30 '{recording_path}'"
 
-        recording_process = subprocess.Popen(shlex.split(start_command), stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        recording_process = subprocess.Popen(shlex.split(start_command), stdout=subprocess.DEVNULL,
+                                             stderr=subprocess.DEVNULL)
     elif platform_name == 'Windows':
         screen_width, screen_height = pyautogui.size()
         start_command = f"ffmpeg -y -f gdigrab -draw_mouse 1 -video_size {screen_width}x{screen_height} -i desktop -pix_fmt yuv420p -c:v libx264 -r 30 '{recording_path}'"
 
-        recording_process = subprocess.Popen(shlex.split(start_command), stdin=subprocess.PIPE, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        recording_process = subprocess.Popen(shlex.split(start_command), stdin=subprocess.PIPE,
+                                             stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     else:
         return jsonify({'status': 'error', 'message': 'Recording is not supported on this platform.'}), 400
-    
-    return jsonify({'status': 'success', 'message': f'Started recording to: {recording_path}.\nCOMMAND: {start_command}'})
+
+    return jsonify(
+        {'status': 'success', 'message': f'Started recording to: {recording_path}.\nCOMMAND: {start_command}'})
+
 
 @app.route('/end_recording', methods=['POST'])
 def end_recording():
@@ -1550,19 +1603,19 @@ def end_recording():
     #     c.send_signal(signal.CTRL_C_EVENT)
     # os.killpg(os.getpgid(recording_process.pid), signal.SIGTERM)
     # os.kill(recording_process.pid, signal.CTRL_C_EVENT)
-    recording_process.communicate(b'q') 
+    recording_process.communicate(b'q')
     # os.kill(recording_process.pid, signal.SIGINT)
     # os.kill(recording_process.pid, signal.SIGINT)
     recording_process.wait()
     recording_process.terminate()
-    # if recording_process.poll() is None:  
-    #     # Forcefully kill the process if it did not terminate  
+    # if recording_process.poll() is None:
+    #     # Forcefully kill the process if it did not terminate
     #     recording_process.kill()
     recording_process = None
 
     # return recording video file
     if os.path.exists(recording_path):
-        return  jsonify({'status': 'success', 'message': f'record saved to: {recording_path}'}), 200
+        return jsonify({'status': 'success', 'message': f'record saved to: {recording_path}'}), 200
     else:
         return abort(404, description="Recording failed")
 
@@ -1581,7 +1634,8 @@ def save_state():
         command = f'Checkpoint-Computer -Description "{snapshot_name}" -RestorePointType "MODIFY_SETTINGS"'
         command = shlex.split(command)
 
-        result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, text=True, timeout=120)
+        result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True, text=True,
+                                timeout=120)
         return jsonify({
             'status': 'success',
             'message': f'Created a snapshot named {snapshot_name}',
@@ -1591,10 +1645,10 @@ def save_state():
         })
     except FileNotFoundError:
         return jsonify({"error": "Could not create snapshot"}), 404
-    
+
+
 @app.route('/revert_to_snapshot', methods=['POST'])
 def revert_to_snapshot():
-    
     # restores a system snapshot with the name provided
     # if 'snapshot_name' in request.form:
     #     snapshot_name = os.path.expandvars(os.path.expanduser(request.form['file_path']))
@@ -1618,6 +1672,7 @@ def revert_to_snapshot():
     # except FileNotFoundError:
     #     return jsonify({"error": "Could not restore snapshot"}), 404
     return jsonify({"error": "Restore snapshot no implemented"}), 501
+
 
 @app.route('/are_files_sorted_by_modified_time', methods=['POST'])
 def get_are_files_sorted_by_modified_time():
@@ -1661,6 +1716,7 @@ def get_are_files_sorted_by_modified_time():
     else:
         return jsonify({'status': 'error', 'message': f'{directory}: files are not sorted by modified time'}), 400
 
+
 @app.route('/is_directory_read_only_for_user', methods=['POST'])
 def is_directory_read_only_for_user():
     data = request.json
@@ -1676,7 +1732,8 @@ def is_directory_read_only_for_user():
         return jsonify({'status': 'success', 'message': f'{directory} is read-only for {user}'}), 200
     else:
         return jsonify({'status': 'error', 'message': f'{directory} is not read-only for {user}'}), 400
-    
+
+
 @app.route('/are_all_images_tagged', methods=['POST'])
 def are_all_images_tagged():
     data = request.json
@@ -1696,6 +1753,7 @@ def are_all_images_tagged():
             return jsonify({'status': 'error', 'message': f'{image_file} in {directory} is not tagged with {tag}'}), 400
     return jsonify({'status': 'success', 'message': f'All images in {directory} are tagged with {tag}'}), 200
 
+
 @app.route('/library_folders', methods=['POST'])
 def get_library_folders():
     data = request.json
@@ -1710,6 +1768,8 @@ def get_library_folders():
     library_folders = fileexplorer_utils.get_library_folders(library_name)
     print(f"Library Folders: {library_folders}")
     return jsonify({'status': 'success', 'output': library_folders}), 200
+
+
 @app.route('/check_if_timer_started', methods=['POST'])
 def get_check_if_timer_started():
     data = request.json
@@ -1719,7 +1779,7 @@ def get_check_if_timer_started():
         return jsonify({'error': 'minutes is required'}), 400
     if 'seconds' not in data:
         return jsonify({'error': 'seconds is required'}), 400
-    
+
     hours = data['hours']
     minutes = data['minutes']
     seconds = data['seconds']
@@ -1734,18 +1794,19 @@ def get_check_if_timer_started():
         return jsonify({'status': 'success', 'message': 'Timer exists'}), 200
     else:
         return jsonify({'status': 'error', 'message': 'Timer does not exist'}), 400
-    
+
+
 @app.route('/check_if_world_clock_exists', methods=['POST'])
 def get_check_if_world_clock_exists():
     data = request.json
     if 'city' not in data or 'country' not in data:
         return jsonify({'error': 'city and country are required'}), 400
-        
+
     city = data['city']
     country = data['country']
 
     print("Checking if world clock exists for {}, {}".format(city, country))
-    
+
     # Check if the world clock exists
     import uiautomation_utils
     world_clock_exists = uiautomation_utils.clock_check_if_world_clock_exists(city, country)
@@ -1755,12 +1816,18 @@ def get_check_if_world_clock_exists():
     else:
         return jsonify({'status': 'error', 'message': 'World clock does not exist'}), 400
 
+
 # Load JSON configuration from file
 import json
+
+
 def load_config():
     with open(os.path.join(r'\\host.lan\Data', 'agents.json')) as f:
         return json.load(f)
+
+
 config = load_config()
+
 
 @app.route('/run_server_agent', methods=['POST'])
 def run_server_agent():
@@ -1778,14 +1845,17 @@ def run_server_agent():
 
         # Extract the entry point from the repository configuration
         startup_type = repo_config.get('startuptype', "")
-        startup_point = os.path.join(r'\\host.lan\Data', 'mm_agents', agent_name, repo_config.get('startuppoint', "").replace('/', '\\'))
+        startup_point = os.path.join(r'\\host.lan\Data', 'mm_agents', agent_name,
+                                     repo_config.get('startuppoint', "").replace('/', '\\'))
 
         # Determine the command based on the startup type
         if startup_type.lower() == 'powershell':
             if agent_settings == "":
-                command = ['powershell', '-ExecutionPolicy', 'Bypass', '-File', startup_point, '-instruction', instruction]
+                command = ['powershell', '-ExecutionPolicy', 'Bypass', '-File', startup_point, '-instruction',
+                           instruction]
             else:
-                command = ['powershell', '-ExecutionPolicy', 'Bypass', '-File', startup_point, '-instruction', instruction, '-agent_settings', json.dumps(agent_settings)]
+                command = ['powershell', '-ExecutionPolicy', 'Bypass', '-File', startup_point, '-instruction',
+                           instruction, '-agent_settings', json.dumps(agent_settings)]
         elif startup_type.lower() == 'python':
             if agent_settings == "":
                 command = ['py', startup_point, '--instruction', instruction]
@@ -1845,10 +1915,9 @@ def run_server_agent():
     except Exception as e:
         print(f"Error running agent: {e}")
 
+
 if __name__ == '__main__':
     app.run(debug=True, host="0.0.0.0", port=args.port)
-
-
 
 # example command to test server. get platform
 # curl -X GET http://127.0.0.1:5000/platform
