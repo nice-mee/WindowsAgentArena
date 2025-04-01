@@ -3,6 +3,7 @@ from __future__ import annotations
 import logging
 import os
 import subprocess
+import sys
 import time
 import json
 from typing import Callable, Any, Optional, Tuple
@@ -19,6 +20,7 @@ logger = logging.getLogger("desktopenv.env")
 
 Metric = Callable[[Any, Any], float]
 Getter = Callable[[gym.Env, Dict[str, Any]], Any]
+
 
 def _execute_command(command: List[str]) -> None:
     def _is_contained_in(a, b):
@@ -106,6 +108,15 @@ class DesktopEnv(gym.Env):
         self._step_no: int = 0
         self.action_history: List[Dict[str, any]] = []
 
+    def requirement_init(self):
+        try:
+            import pygame
+        except ImportError:
+            print("pygame is not installed, installing now...")
+            subprocess.check_call([sys.executable, "-m", "pip", "install", "pygame"])
+            import pygame  # Re-import to ensure successful installation
+            print("pygame has been installed successfully")
+
     @property
     def vm_platform(self):
         return self.controller.get_vm_platform()
@@ -123,10 +134,10 @@ class DesktopEnv(gym.Env):
         attempt = 0
 
         while attempt < max_attempts:
-            if self.controller.get_probe(): # Check if VM is ready
+            if self.controller.get_probe():  # Check if VM is ready
                 logger.info("VM is up and ready.")
                 return True
-            
+
             logger.info("VM not ready yet. Retrying in 5 seconds...")
             time.sleep(5)  # Wait for 5 seconds before retrying
             attempt += 1
@@ -162,7 +173,8 @@ class DesktopEnv(gym.Env):
         screenshot = self._get_screenshot()
         # screenshot = None
         # print("screenshot done")
-        accessibility_tree = self.controller.get_accessibility_tree(backend=self.a11y_backend) if self.require_a11y_tree else None
+        accessibility_tree = self.controller.get_accessibility_tree(
+            backend=self.a11y_backend) if self.require_a11y_tree else None
         # accessibility_tree = "test"
         # accessibility_tree = None
         # print("accessibility_tree done")
@@ -182,12 +194,11 @@ class DesktopEnv(gym.Env):
                 "window_names_str": window_names_str,
                 "computer_clipboard": computer_clipboard,
                 "human_input": human_input
-                }
+            }
         else:
             return None
         # print("terminal done")
         # print("LOG: Observation collected")
-        
 
     def _set_task_info(self, task_config: Dict[str, Any]):
         self.task_id: str = task_config["id"]
@@ -256,8 +267,9 @@ class DesktopEnv(gym.Env):
         if self.remote_vm:
             # TODO: Implement this
             # self.controller.revert_to_snapshot(self.snapshot_name)
-            
-            logger.error("Not implemented! Reverting to snapshot is not supported for remote VMs! Closing all applications instead")
+
+            logger.error(
+                "Not implemented! Reverting to snapshot is not supported for remote VMs! Closing all applications instead")
             self.setup_controller._close_all_setup()
 
         time.sleep(5)
@@ -384,19 +396,19 @@ class DesktopEnv(gym.Env):
                 return 0
             expected_state = self.expected_getter(self, self.evaluator["expected"]) if "expected" in self.evaluator \
                 else None
- 
+
             # logger.info(f"RESULT STATE: {result_state}")
             # logger.info(f"EXPECTED STATE: {expected_state}")
 
             metric: float = self.metric(result_state, expected_state,
                                         **self.metric_options) if expected_state is not None \
                 else self.metric(result_state, **self.metric_options)
-            
+
         if isinstance(metric, (float, int, bool)):
             return metric
         else:
             logger.error("Task metric value produced is neither numeric nor boolean: returning 0 instead")
-            return 0            
+            return 0
 
         return metric
 
