@@ -311,6 +311,7 @@ def compare_table(result: str, expected: str = None, **options) -> float:
             if sheet1 is None:
                 return 0.
             sheet2: Worksheet = _load_sheet(*parse_idx(r["sheet_idx1"], xlworkbookr, xlworkbooke))
+            logger.debug(f"sheet1: {sheet1.freeze_panes}, sheet2: {sheet2.freeze_panes}")
             metric: bool = sheet1.freeze_panes == sheet2.freeze_panes
             logger.debug("Assertion: %s.freeze(%s) == %s.freeze(%s) - %s"
                          , r["sheet_idx0"], sheet1.freeze_panes

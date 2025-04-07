@@ -1311,12 +1311,23 @@ def open_file():
 
     try:
         if platform.system() == "Windows":
-            os.startfile(path)
-            time.sleep(5)
-        else:
-            open_cmd: str = "open" if platform.system() == "Darwin" else "xdg-open"
-            subprocess.Popen([open_cmd, str(path)])
-            time.sleep(5)
+            if path.suffix.lower() in [".xlsx", ".xls", ".csv"]:
+                try:
+                    import win32com.client as win32
+                    excel = win32.Dispatch('Excel.Application')
+                    excel.Visible = True
+                    workbook = excel.Workbooks.Open(path)
+
+                    time.sleep(10)
+                    object_name_list = [doc.Name for doc in excel.Workbooks]
+                    
+                    return f"File(Excel) opened successfully, {object_name_list}"
+                except FileNotFoundError:
+                    os.startfile(path)
+            else:
+                os.startfile(path)
+            time.sleep(10)
+                
         return "File opened successfully"
     except Exception as e:
         logger.error(f"Failed to open {path}. Error: {e}")
