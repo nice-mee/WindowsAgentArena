@@ -11,16 +11,7 @@
           "command": [
             "start",
             "msedge",
-            "--remote-debugging-port=1337"
-          ]
-        }
-      },
-      {
-        "type": "launch",
-        "parameters": {
-          "command": [
-            "start",
-            "msedge",
+            "--remote-debugging-port=1337",
             "https://jalammar.github.io/illustrated-transformer/"
           ]
         }

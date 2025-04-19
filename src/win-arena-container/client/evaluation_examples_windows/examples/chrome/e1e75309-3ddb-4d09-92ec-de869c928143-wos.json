@@ -8,6 +8,22 @@
       "type": "launch",
       "parameters": {
         "command": [
+          "netsh",
+          "interface",
+          "portproxy",
+          "add",
+          "v4tov4",
+          "listenport=9222",
+          "listenaddress=0.0.0.0",
+          "connectport=1337",
+          "connectaddress=127.0.0.1"
+        ]
+      }
+    },
+    {
+      "type": "launch",
+      "parameters": {
+        "command": [
           "google-chrome",
           "--remote-debugging-port=1337",
           "--force-renderer-accessibility"
