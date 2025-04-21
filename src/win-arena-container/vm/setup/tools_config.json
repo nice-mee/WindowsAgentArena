@@ -28,9 +28,10 @@
     },
     "LibreOffice": {
         "mirrors": [
-            "https://mirror.raiolanetworks.com/tdf/libreoffice/stable/24.8.4/win/x86_64/LibreOffice_24.8.4_Win_x86-64.msi",
-            "https://mirrors.iu13.net/tdf/libreoffice/stable/24.8.4/win/x86_64/LibreOffice_24.8.4_Win_x86-64.msi",
-            "https://download.documentfoundation.org/libreoffice/stable/24.8.4/win/x86_64/LibreOffice_24.8.4_Win_x86-64.msi"
+            "https://mirror.raiolanetworks.com/tdf/libreoffice/stable/25.2.1/win/x86_64/LibreOffice_25.2.1_Win_x86-64.msi",
+            "https://mirrors.iu13.net/tdf/libreoffice/stable/25.2.1/win/x86_64/LibreOffice_25.2.1_Win_x86-64.msi",
+            "https://download.documentfoundation.org/libreoffice/stable/25.2.1/win/x86_64/LibreOffice_25.2.1_Win_x86-64.msi",
+            "https://www.libreoffice.org/donate/dl/win-x86_64/25.2.1/en-US/LibreOffice_25.2.1_Win_x86-64.msi"
         ]
     },
     "VLC": {
@@ -67,5 +68,11 @@
             "https://caddyserver.com/api/download?os=windows&arch=amd64"
         ],
         "alias": "caddy"
+    },
+    "MicrosoftOffice": {
+        "mirrors": [
+            "https://download.microsoft.com/download/6c1eeb25-cf8b-41d9-8d0d-cc1dbc032140/officedeploymenttool_18526-20146.exe"
+        ],
+        "alias": "msoffice"
     }
   }

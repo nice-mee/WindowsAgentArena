@@ -184,28 +184,116 @@ if (Get-Command $chromeAlias -ErrorAction SilentlyContinue) {
     }
 }
 
-# - LibreOffice
-$libreOfficeToolName = "LibreOffice"
-$libreOfficeToolDetails = Get-ToolDetails -toolsList $toolsList -toolName $libreOfficeToolName
+# - Microsoft Office
+$msOfficeToolName = "MicrosoftOffice"
+$msOfficeToolDetails = Get-ToolDetails -toolsList $toolsList -toolName $msOfficeToolName
 
-# Check for LibreOffice installation
-$installedVersion = (Get-WmiObject -Query "SELECT * FROM Win32_Product WHERE Name like 'LibreOffice%'").Version
-if (-not [string]::IsNullOrWhiteSpace($installedVersion)) {
-    Write-Host "LibreOffice $version is already installed."
-} else {
-    Write-Host "LibreOffice is not installed. Downloading and installing LibreOffice..."
-    $libreOfficeInstallerFilePath = "$env:TEMP\libreOffice_installer.exe"
-    
-    $downloadResult = Invoke-DownloadFileFromAvailableMirrors -mirrorUrls $libreOfficeToolDetails.mirrors -outfile $libreOfficeInstallerFilePath
-    if (-not $downloadResult) {
-        Write-Host "Failed to download LibreOffice. Please try again later or install manually."
-    } else {
-        Start-Process "msiexec.exe" -ArgumentList "/i `"$libreOfficeInstallerFilePath`" /quiet" -Wait -NoNewWindow
-        Write-Host "LibreOffice has been installed."
-    
-        # Add LibreOffice to the system PATH environment variable
-        Add-ToEnvPath -NewPath "C:\Program Files\LibreOffice\program"
+$configXmlPath = "$scriptFolder\ms_office_config.xml"
+
+function Test-OfficeApplication {
+    param (
+        [string]$AppName,
+        [string]$ExeName
+    )
+
+    try {
+        $regPath = "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\$ExeName"
+        if (Test-Path $regPath) {
+            $appPath = (Get-ItemProperty $regPath).'(Default)'
+            if (Test-Path $appPath) {
+                Write-Host "Microsoft $AppName is installed at: $appPath"
+                return $true
+            }
+        }
+
+        $commonPaths = @(
+            "${env:ProgramFiles}\Microsoft Office\root\Office16\$ExeName",
+            "${env:ProgramFiles(x86)}\Microsoft Office\root\Office16\$ExeName",
+            "${env:ProgramFiles}\Microsoft Office\Office16\$ExeName"
+        )
+
+        foreach ($path in $commonPaths) {
+            if (Test-Path $path) {
+                Write-Host "Microsoft $AppName is installed at: $path"
+                return $true
+            }
+        }
+
+        Write-Host "Microsoft $AppName is not detected"
+        return $false
+
+    } catch {
+        Write-Host "Error checking Microsoft $AppName installation: $_"
+        return $false
     }
+}
+
+function Install-Office {
+    $odtInstallerFilePath = "$env:TEMP\officedeploymenttool.exe"
+    $odtExtractPath = "$env:TEMP\officedeploymenttool"
+
+    if (-not (Test-Path $configXmlPath)) {
+        Write-Host "Office configuration file not found at: $configXmlPath"
+        return $false
+    }
+
+    try {
+        $downloadResult = Invoke-DownloadFileFromAvailableMirrors -mirrorUrls $msOfficeToolDetails.mirrors -outfile $odtInstallerFilePath
+
+        if (-not $downloadResult) {
+            Write-Host "Failed to download Office Deployment Tool"
+            return $false
+        }
+
+        Write-Host "Extracting Office Deployment Tool..."
+        Start-Process -FilePath $odtInstallerFilePath -ArgumentList "/quiet /extract:$odtExtractPath" -Wait
+
+        if (!(Test-Path "$odtExtractPath\setup.exe")) {
+            Write-Host "Failed to extract setup.exe"
+            return $false
+        }
+
+        Write-Host "Downloading Office installation files... $configXmlPath"
+        $setupProcess = Start-Process -FilePath "$odtExtractPath\setup.exe" -ArgumentList "/configure", "`"$configXmlPath`"" -Wait -PassThru -Verb RunAs
+        if ($setupProcess.ExitCode -ne 0) {
+            Write-Host "Failed to download Office installation files"
+            return $false
+        }
+
+        Write-Host "Installing Office... $configXmlPath"
+        $setupProcess = Start-Process -FilePath "$odtExtractPath\setup.exe" -ArgumentList "/configure", "`"$configXmlPath`"" -Wait -PassThru -Verb RunAs
+        if ($setupProcess.ExitCode -ne 0) {
+            Write-Host "Office installation failed"
+            return $false
+        }
+
+        Write-Host "Office installation completed successfully"
+        if (Test-Path $odtExtractPath) {
+            Remove-Item $odtExtractPath -Force -Recurse
+        }
+        return $true
+    }
+    catch {
+        Write-Host "Error during Office installation: $_"
+        return $false
+    }
+}
+
+# Check Word, Excel and PowerPoint
+$wordInstalled = Test-OfficeApplication -AppName "Word" -ExeName "WINWORD.EXE"
+$excelInstalled = Test-OfficeApplication -AppName "Excel" -ExeName "EXCEL.EXE"
+$powerPointInstalled = Test-OfficeApplication -AppName "PowerPoint" -ExeName "POWERPNT.EXE"
+
+if (-not ($wordInstalled -and $excelInstalled -and $powerPointInstalled)) {
+    Write-Host "Microsoft Office is not fully installed, attempting to install Office..."
+    $installSuccess = Install-Office
+
+    if (Test-Path $configXmlPath) {
+        Remove-Item -Path $configXmlPath -Force
+        Write-Host "Removed Office configuration file"
+    }
+} else {
+    Write-Host "Microsoft Office is already installed"
 }
 
 # - VLC
@@ -377,7 +465,7 @@ if (Test-Path $caddyProxyExecutablePath) {
     }
 }
 
-# - Windows Arena Server Setup 
+# - Windows Arena Server Setup
 
 $pythonServerPort = 5000
 $onLogonTaskName = "WindowsArena_OnLogon"

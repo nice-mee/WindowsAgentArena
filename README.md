@@ -12,9 +12,9 @@ Clone the repository
 git clone https://github.com/nice-mee/WindowsAgentArena.git
 ```
 
-> Note: If you want to run OSWorld cases, checkout the `2020-qqtcg/dev` branch.
+> Note: If you want to run OSWorld cases, checkout the `osworld` branch.
 > ```bash
-> git checkout 2020-qqtcg/dev
+> git checkout osworld
 > ```
 
 Create a `config.json` file in the root of WAA repo, the API key here doesn't matter, since UFO will only use the key from its own config file.
