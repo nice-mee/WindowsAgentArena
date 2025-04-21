@@ -1,23 +1,18 @@
 
-This repository contains a modified version of [**Windows Agent Arena (WAA) 🪟**](https://github.com/microsoft/WindowsAgentArena) , a scalable Windows AI agent platform for testing and benchmarking multi-modal, desktop AI agents. This modified version focuses on integration with [UFO](https://github.com/microsoft/UFO), a UI-Focused Agent for Windows OS Interaction.
-
-[**OSWorld**](https://github.com/xlang-ai/OSWorld) has been integrated into the WAA framework. Only minimal modifications are required to run OSWorld within the WAA environment.
+# OSWorld Benchmark
+[**OSWorld**](https://github.com/xlang-ai/OSWorld) is a first-of-its-kind scalable, real computer environment for multimodal agents, supporting task setup, execution-based evaluation, and interactive learning across operating systems.
+We selected Windows-related use cases from osworld to construct this benchmark.
 
 ## 💻 Deployment Guide (WSL)
-
-We highly recommend you have a look at the deployment guide from the original [WindowsAgentArena](https://github.com/microsoft/WindowsAgentArena) repository. Our guide here assumes you are familiar with the deployment process of the original repository. The following steps will help you set up the environment for running the UFO agent in the Windows Agent Arena.
 
 ### 1. Setup the repository
 
 Clone the repository
 ```bash
 git clone https://github.com/nice-mee/WindowsAgentArena.git
+git checkout osworld
 ```
 
-> Note: If you want to run OSWorld cases, checkout the `osworld` branch.
-> ```bash
-> git checkout osworld
-> ```
 
 Create a `config.json` file in the root of WAA repo, the API key here doesn't matter, since UFO will only use the key from its own config file.
 

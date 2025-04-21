@@ -382,6 +382,9 @@ def evaluate_presentation_fill_to_rgb_distance(pptx_file, rules):
 
     prs = Presentation(pptx_file)
     similarity = 1 - sum(slide_fill_distance_to_rgb(slide, rgb) for slide in prs.slides) / len(prs.slides)
+
+    if similarity >= 0.7:
+        return 1
     return similarity
 
 
