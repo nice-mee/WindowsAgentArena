@@ -80,9 +80,13 @@ Instead, visit `localhost:8006` and control the WAA Windows, do the following th
 1. Disable Windows Firewall.
 2. Open Google Chrome and complete the initial setup.
 3. Open VLC and complete the initial setup.
+4. Activate Office 365 (Word, Excel, PPT)
 
 
 After completing these steps, kill the WAA client, then copy the "golden" image under `storage` folder to somewhere else.
+
+### Config OSWorld setting
+[How to setup the setting in OSWorld](https://github.com/xlang-ai/OSWorld/blob/main/ACCOUNT_GUIDELINE.md)
 
 ### How to Perform an Experiment Run
 

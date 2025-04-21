@@ -289,4 +289,3 @@ src/win-arena-container/vm/setup/agents.json
 src/win-arena-container/vm/setup/mm_agents/*
 src/win-arena-container/vm/setup/Logs.txt
 src/win-arena-container/client/ufo/
-src/win-arena-container/client/evaluation_examples_windows/settings/*
