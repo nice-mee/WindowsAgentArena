@@ -86,6 +86,7 @@ Instead, visit `localhost:8006` and control the WAA Windows, do the following th
 After completing these steps, kill the WAA client, then copy the "golden" image under `storage` folder to somewhere else.
 
 ### Config OSWorld setting
+Config OSWorld setting under `evaluation_examples_windows/settings`
 [How to setup the setting in OSWorld](https://github.com/xlang-ai/OSWorld/blob/main/ACCOUNT_GUIDELINE.md)
 
 ### How to Perform an Experiment Run
@@ -97,9 +98,8 @@ Before an experiment run, do the following things:
 
 Then run this command:
 ```bash
-./run-local.sh --mode dev --json-name "evaluation_examples_windows/test_full.json" --agent UFO --agent-settings '{"llm_type": "azure", "llm_endpoint": "https://cloudgpt-openai.azure-api.net/openai/deployments/gpt-4o-20240513/chat/completions?api-version=2024-04-01-preview", "llm_auth": {"type": "api-key", "token": ""}}
+./run-local.sh --mode dev --json-name "evaluation_examples_windows/test_osworld.json" --agent UFO --agent-settings '{"llm_type": "azure", "llm_endpoint": "https://cloudgpt-openai.azure-api.net/openai/deployments/gpt-4o-20240513/chat/completions?api-version=2024-04-01-preview", "llm_auth": {"type": "api-key", "token": ""}}
 ```
 
 You probably will use a different LLM type or endpoint, so make sure to change the `--agent-settings` parameter accordingly.
 
-> Note: `test_full.json` contains all the test cases where UIA works, `test_all.json` contains all the test cases, even if UIA doesn't work. So please use `test_full.json` if OmniParser is not used.
