@@ -1,6 +1,8 @@
 
 This repository contains a modified version of [**Windows Agent Arena (WAA) 🪟**](https://github.com/microsoft/WindowsAgentArena) , a scalable Windows AI agent platform for testing and benchmarking multi-modal, desktop AI agents. This modified version focuses on integration with [UFO](https://github.com/microsoft/UFO), a UI-Focused Agent for Windows OS Interaction.
 
+[**OSWorld**](https://github.com/xlang-ai/OSWorld) has been integrated into the WAA framework. Only minimal modifications are required to run OSWorld within the WAA environment.
+
 ## 💻 Deployment Guide (WSL)
 
 We highly recommend you have a look at the deployment guide from the original [WindowsAgentArena](https://github.com/microsoft/WindowsAgentArena) repository. Our guide here assumes you are familiar with the deployment process of the original repository. The following steps will help you set up the environment for running the UFO agent in the Windows Agent Arena.
