@@ -97,12 +97,11 @@ def set_config(agent_settings_json: dict = {}):
         
         if llm_type == "azure" and auth_type == "Identity":
             configs["HOST_AGENT"]["API_TYPE"] = "azure_ad"
-            configs["APP_AGENT"]["API_TYPE"] = "azure_ad"
             configs["HOST_AGENT"]["API_BASE"] = llm_endpoint
+            configs["APP_AGENT"]["API_TYPE"] = "azure_ad"
             configs["APP_AGENT"]["API_BASE"] = llm_endpoint
+            configs["BACKUP_AGENT"]["API_TYPE"] = "azure_ad"
             configs["BACKUP_AGENT"]["API_BASE"] = llm_endpoint
-            configs["BACKUP_AGENT"]["API_BASE"] = llm_endpoint
-
         elif llm_type == "azure" and auth_type == "api-key":
             configs["HOST_AGENT"]["API_TYPE"] = "aoai"
             configs["HOST_AGENT"]["API_BASE"] = llm_endpoint
@@ -112,19 +111,15 @@ def set_config(agent_settings_json: dict = {}):
             configs["BACKUP_AGENT"]["API_BASE"] = llm_endpoint
         elif llm_type == "oai":
             configs["HOST_AGENT"]["API_TYPE"] = "openai"
-            configs["HOST_AGENT"]["API_BASE"] = "https://api.openai.com/v1"
+            configs["HOST_AGENT"]["API_BASE"] = llm_endpoint
             configs["APP_AGENT"]["API_TYPE"] = "openai"
-            configs["APP_AGENT"]["API_BASE"] = "https://api.openai.com/v1"
+            configs["APP_AGENT"]["API_BASE"] = llm_endpoint
             configs["BACKUP_AGENT"]["API_TYPE"] = "openai"
-            configs["BACKUP_AGENT"]["API_BASE"] = "https://api.openai.com/v1"
+            configs["BACKUP_AGENT"]["API_BASE"] = llm_endpoint
 
         configs["HOST_AGENT"]["API_KEY"] = token
         configs["APP_AGENT"]["API_KEY"] = token
         configs["BACKUP_AGENT"]["API_KEY"] = token
-        configs["HOST_AGENT"]["API_MODEL"] = "gpt-4o"
-        configs["APP_AGENT"]["API_MODEL"] = "gpt-4o"
-        configs["BACKUP_AGENT"]["API_MODEL"] = "gpt-4o"
-        configs["MAX_ROUND"] = 1
 
 if __name__ == "__main__":
     main()
