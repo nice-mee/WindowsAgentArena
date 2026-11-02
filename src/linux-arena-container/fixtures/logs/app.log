@@ -1,0 +1,7 @@
+2026-10-01T09:00:00Z INFO request_id=r01 code=OK message=started
+2026-10-01T09:00:01Z ERROR request_id=r02 code=E_DB message=database_timeout
+2026-10-01T09:00:02Z INFO request_id=r03 code=OK message=ERROR_counter_initialized
+2026-10-01T09:00:03Z ERROR request_id=r04 code=E_UPSTREAM message=upstream_unavailable
+2026-10-01T09:00:04Z WARN request_id=r05 code=W_RETRY message=retry_scheduled
+2026-10-01T09:00:05Z INFO request_id=r06 code=OK message=completed
+2026-10-01T09:00:06Z ERROR request_id=r07 code=E_DB message=database_timeout
