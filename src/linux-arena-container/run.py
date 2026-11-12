@@ -3,13 +3,11 @@
 import argparse
 from datetime import datetime, timezone
 import fcntl
-import hashlib
 import json
 import math
 import os
 from pathlib import Path
 import re
-import shlex
 import shutil
 import signal
 import subprocess
@@ -17,7 +15,9 @@ import sys
 import time
 import uuid
 
-from cases import CASES, HERE, check_answer, make_request
+from cases import CASES, HERE
+from desktop import open_application
+from verify import final_answer
 
 
 def save(path, value):
@@ -26,10 +26,6 @@ def save(path, value):
 
 def read_json(path, default):
     return json.loads(path.read_text(encoding="utf-8")) if path.exists() else default
-
-
-def digest(path):
-    return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
 def group_running(group):
@@ -45,23 +41,61 @@ def group_running(group):
 
 
 def stop_group(process):
-    """Stop this run's worker/services/tools, never a pre-existing service."""
+    """Stop owned descendants too: Linux MCP commands create separate sessions."""
+    owned = {}
+
+    def descendants():
+        table = {}
+        for path in Path("/proc").glob("[0-9]*/stat"):
+            try:
+                fields = path.read_text().rsplit(")", 1)[1].split()
+                table[int(path.parent.name)] = (fields[0], int(fields[1]), int(fields[2]), fields[19])
+            except (FileNotFoundError, ProcessLookupError):
+                continue
+        changed = True
+        while changed:
+            changed = False
+            for pid, (state, parent, group, birth) in table.items():
+                parent_owned = parent in owned and parent in table and table[parent][3] == owned[parent]
+                if pid not in owned and (pid == process.pid or group == process.pid or parent_owned):
+                    owned[pid] = birth
+                    changed = True
+        return {pid for pid, birth in owned.items() if pid in table and table[pid][3] == birth and table[pid][0] != "Z"}
+
+    descendants()
     for sig in (signal.SIGTERM, signal.SIGKILL):
         try:
             os.killpg(process.pid, sig)
         except ProcessLookupError:
-            break
+            pass
+        for pid in descendants():
+            try:
+                os.kill(pid, sig)
+            except ProcessLookupError:
+                pass
         deadline = time.monotonic() + 3
         while time.monotonic() < deadline:
             process.poll()
-            if not group_running(process.pid):
+            if not descendants():
                 return True
             time.sleep(0.1)
     process.wait(timeout=3)
-    return not group_running(process.pid)
+    return not descendants()
 
 
 def collect_traces(ufo_root, run_id, run_dir):
+    # Keep the original per-step observations, including a last capture whose
+    # model call failed before response.log received a record. Never redraw them.
+    for directory in sorted((ufo_root / "logs").glob(f"galaxy_{run_id}_*")):
+        if not directory.is_dir():
+            continue
+        for pattern in ("action_step*.png", "action_step*_ui.json"):
+            for source in sorted(directory.glob(pattern)):
+                target = run_dir / "traces" / directory.name / source.name
+                target.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copy2(source, target)
+
+    # The verifier consumes only response logs; screenshots remain beside them.
     sources = sorted((ufo_root / "logs").glob(f"galaxy_{run_id}_*/response.log"))
     galaxy_log = ufo_root / "logs" / "galaxy" / run_id / "response.log"
     if galaxy_log.exists():
@@ -75,70 +109,6 @@ def collect_traces(ufo_root, run_id, run_dir):
     return copies
 
 
-def check_reads(traces, materials, filenames):
-    """Require content-bearing MCP results for this run's material paths."""
-    read_files, calls, errors = set(), [], []
-    for trace in traces:
-        if not trace["device"]:
-            continue
-        path = Path(trace["copy"])
-        for line_number, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
-            if not line.strip():
-                continue
-            try:
-                record = json.loads(line)
-                for action in record.get("action", []):
-                    if action.get("function", "").split("/")[-1] != "execute_command":
-                        continue
-                    arguments = action["arguments"]
-                    tokens = shlex.split(arguments.get("command", ""))
-                    payload = action.get("result", {}).get("result", {})
-                    call = {"log": str(path), "line": line_number,
-                            "command": arguments.get("command"), "cwd": arguments.get("cwd"),
-                            "exit_code": payload.get("exit_code"), "files": []}
-                    calls.append(call)
-                    if not tokens or not payload.get("stdout"):
-                        continue
-                    tool = Path(tokens[0]).name
-                    valid = (tool in {"cat", "head", "tail", "grep", "cut", "more", "less"}
-                             and payload.get("success") is True and payload.get("exit_code") == 0)
-                    valid |= tool == "diff" and payload.get("exit_code") in {0, 1}
-                    if not valid:
-                        continue
-                    for token in tokens[1:]:
-                        candidate = Path(token)
-                        if not candidate.is_absolute():
-                            # No guessed cwd: absent cwd requires an absolute operand.
-                            if not arguments.get("cwd"):
-                                continue
-                            candidate = Path(arguments["cwd"]) / candidate
-                        for filename in filenames:
-                            if candidate.resolve() == materials / filename:
-                                read_files.add(filename)
-                                call["files"].append(filename)
-            except (ValueError, TypeError, KeyError, AttributeError) as exc:
-                errors.append(f"{path}:{line_number}: {exc}")
-    return {"passed": set(filenames) <= read_files and not errors,
-            "files_read": sorted(read_files), "missing": sorted(set(filenames) - read_files),
-            "calls": calls, "errors": errors}
-
-
-def final_answer(execution, device):
-    tasks = execution.get("tasks", {})
-    if not tasks or any(t.get("target_device_id") != device for t in tasks.values()):
-        raise ValueError("Missing tasks or unexpected target device")
-    sinks = [t for t in tasks.values() if not t.get("dependents")]
-    if len(sinks) != 1:
-        raise ValueError("Expected one final device result; ambiguous or missing terminal task")
-    task = sinks[0]
-    result = task.get("result") or {}
-    if task.get("status") != "completed" or result.get("status") != "completed":
-        raise ValueError("Final device task did not complete")
-    rounds = result.get("result")
-    if not isinstance(rounds, list) or not rounds or "result" not in rounds[-1]:
-        raise ValueError("Final device task has no round result")
-    return rounds[-1]["result"]
-
 
 def redact_logs(run_dir):
     # UFO's server prints its local auth token at startup. Do not retain it.
@@ -149,13 +119,16 @@ def redact_logs(run_dir):
         path.write_text(text, encoding="utf-8")
 
 
-def run(args):
+def run_case(args):
     started = time.monotonic()
+    case = CASES[args.case]
     run_id = "arena-" + datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S") + "-" + uuid.uuid4().hex[:8]
     run_dir = args.output / run_id
     materials = run_dir / "materials"
     materials.mkdir(parents=True)
-    summary = {"case_id": args.case, "run_id": run_id,
+    summary = {"case_id": args.case, "run_id": run_id, "case_version": case.VERSION,
+               "difficulty": case.DIFFICULTY,
+               "request_version": getattr(case, "REQUEST_VERSION", case.VERSION), "verifier_version": case.VERSION, "mode": case.MODE,
                "started_at": datetime.now(timezone.utc).isoformat(),
                "device": args.device, "local_services": args.local_services,
                "initialization": {"status": "not_started"},
@@ -164,17 +137,22 @@ def run(args):
                "status": "running", "errors": [], "run_dir": str(run_dir)}
     save(run_dir / "result.json", summary)
     process, group_stopped, submitted, timed_out = None, True, False, False
+    applications = []
     print(f"运行 {args.case}: {run_id}\n结果目录: {run_dir}", flush=True)
-    hashes = {}
+    state = {}
     try:
-        for name in CASES[args.case]["files"]:
-            source = HERE / "fixtures" / args.case / name
-            shutil.copyfile(source, materials / name)
-            hashes[name] = digest(source)
-            if digest(materials / name) != hashes[name]:
-                raise RuntimeError(f"Material initialization mismatch: {name}")
-        save(run_dir / "materials.json", {"directory": str(materials), "sha256": hashes})
-        request = make_request(args.case, run_id, materials, args.device)
+        state = case.setup(materials)
+        save(run_dir / "materials.json", state)
+        launches = getattr(case, "APPLICATIONS", [])
+        if hasattr(case, "APPLICATION"):
+            launches = [(case.APPLICATION, case.FILENAME)]
+        for app, filename in launches:
+            application = open_application(app, materials / filename, run_dir)
+            applications.append(application)
+            time.sleep(2)
+            if application.poll() not in (None, 0):
+                raise RuntimeError(f"Application startup failed; see application-{app}.log")
+        request = case.make_request(materials)
         save(run_dir / "request.json", {"run_id": run_id, "request": request,
                                       "ufo_root": str(args.ufo_root), "device": args.device,
                                       "local_services": args.local_services})
@@ -193,12 +171,14 @@ def run(args):
         summary["errors"].append("Interrupted by user")
     except Exception as exc:
         summary["errors"].append(str(exc))
+        if not submitted:
+            save(run_dir / "initialization.json", {"status": "failed", "error": str(exc)})
     finally:
         if process is not None:
             summary["process_group"] = process.pid
             try:
                 group_stopped = stop_group(process)
-            except OSError as exc:
+            except (OSError, subprocess.TimeoutExpired) as exc:
                 summary["errors"].append(f"Failed to stop owned process group: {exc}")
 
     try:
@@ -217,25 +197,31 @@ def run(args):
                 summary["status"] = "execution_failed"
             else:
                 summary["status"] = "verification_failed"
-        stopped = group_stopped and (args.local_services or execution.get("device_stopped_confirmed") is True or not submitted or initialization["status"] != "passed")
+        # The worker writes the submission marker before calling Galaxy. Failure
+        # to persist a later initialization record cannot prove a remote stop.
+        dispatched = (run_dir / "submission.json").exists()
+        stopped = group_stopped and (args.local_services or execution.get("device_stopped_confirmed") is True or not dispatched)
         summary["device_operations_stopped"] = bool(stopped)
         if stopped:
             summary["traces"] = collect_traces(args.ufo_root, run_id, run_dir)
             if summary["status"] == "verification_failed":
-                trace = check_reads(summary["traces"], materials, CASES[args.case]["files"])
-                unchanged = all((materials / name).is_file() and digest(materials / name) == value
-                                for name, value in hashes.items())
                 try:
                     raw = final_answer(execution, args.device)
                     save(run_dir / "answer.json", {"source": "final device task result", "raw": raw})
-                    answer = check_answer(args.case, run_id, raw)
                 except ValueError as exc:
-                    answer = {"passed": False, "error": str(exc)}
-                passed = trace["passed"] and answer["passed"] and unchanged
-                summary["verification"] = {"status": "passed" if passed else "failed",
-                                           "answer": answer, "trace": trace, "materials_unchanged": unchanged}
-                summary["status"] = "passed" if passed else "verification_failed"
+                    if getattr(case, "ARTIFACT", False):
+                        summary["verification"] = case.verify(materials, state, {}, summary["traces"])
+                    else:
+                        summary["verification"] = {"status": "failed", "error": str(exc)}
+                else:
+                    summary["verification"] = case.verify(materials, state, raw, summary["traces"])
+                status = summary["verification"]["status"]
+                summary["status"] = {"passed": "passed", "failed": "verification_failed",
+                                     "review_required": "review_required"}[status]
         else:
+            if summary["status"] == "verification_failed":
+                summary["status"] = "execution_failed"
+                summary["execution"]["status"] = "stop_unconfirmed"
             summary["errors"].append("Device stop unconfirmed; verification skipped and materials retained")
     except Exception as exc:
         summary["status"] = "verification_error"
@@ -243,9 +229,20 @@ def run(args):
     finally:
         if summary.get("device_operations_stopped"):
             try:
+                stopped_apps = [stop_group(app) for app in reversed(applications)]
+                if not all(stopped_apps):
+                    raise OSError("Application did not stop; retaining its files")
+                if hasattr(case, "cleanup"):
+                    case.cleanup(materials, state)
+                # Preserve the saved task files before removing this run's scene.
+                if state and not any(p.is_symlink() for p in materials.rglob("*")):
+                    shutil.copytree(materials, run_dir / "evidence/materials")
                 shutil.rmtree(materials)
+                profile = run_dir / "application-profile"
+                if profile.exists():
+                    shutil.rmtree(profile)
                 summary["cleanup"] = {"status": "completed", "removed": str(materials)}
-            except OSError as exc:
+            except (OSError, subprocess.TimeoutExpired) as exc:
                 summary["cleanup"] = {"status": "failed", "error": str(exc)}
                 summary["status"] = "cleanup_failed"
         else:
@@ -257,7 +254,22 @@ def run(args):
         save(run_dir / "result.json", summary)
         redact_logs(run_dir)
     print(f"结果: {summary['status']}，清理: {summary['cleanup']['status']}\n{run_dir / 'result.json'}", flush=True)
-    return 0 if summary["status"] == "passed" else 1
+    return summary
+
+
+def exit_code(summary):
+    return 0 if summary["status"] == "passed" else 3 if summary["status"] == "review_required" else 1
+
+
+def run(args):
+    return exit_code(run_case(args))
+
+
+def interrupt_handler(signum, frame):
+    # Permit the bounded cleanup to finish after the first interrupt.
+    signal.signal(signal.SIGINT, signal.SIG_IGN)
+    signal.signal(signal.SIGTERM, signal.SIG_IGN)
+    raise KeyboardInterrupt(f"Received signal {signum}")
 
 
 def main():
@@ -279,6 +291,8 @@ def main():
             fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
         except BlockingIOError:
             parser.error("Another Linux arena case is running")
+        signal.signal(signal.SIGINT, interrupt_handler)
+        signal.signal(signal.SIGTERM, interrupt_handler)
         return run(args)
 
 

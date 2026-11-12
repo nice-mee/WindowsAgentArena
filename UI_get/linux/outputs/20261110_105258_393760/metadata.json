@@ -1,0 +1,48 @@
+{
+  "session": "x11",
+  "screenshot_backend": "Pillow ImageGrab / X11",
+  "applications": [
+    "gnome-shell",
+    "gsd-keyboard",
+    "gsd-color",
+    "gsd-power",
+    "gsd-wacom",
+    "gsd-media-keys",
+    "evolution-alarm-notify",
+    "gsd-xsettings",
+    "xdg-desktop-portal-gtk",
+    "sogoupinyin-watchdog",
+    "sogou-qimpanel-watchdog",
+    "gjs",
+    "sogoupinyin-service",
+    "sogoupinyin-service",
+    "clash-verge",
+    "update-notifier",
+    "code",
+    "Google Chrome"
+  ],
+  "app_filter": null,
+  "nodes": 5000,
+  "annotated_controls": 1067,
+  "truncated": true,
+  "errors": [],
+  "desktop_rect": [
+    0,
+    0,
+    1920,
+    1080
+  ],
+  "image_size": [
+    1920,
+    1080
+  ],
+  "coordinate_scale": [
+    1.0,
+    1.0
+  ],
+  "notes": [
+    "Screenshot and tree are sequential, not atomic.",
+    "AT-SPI showing/visible does not guarantee a window is not occluded.",
+    "Mixed-DPI or Wayland coordinates may need desktop-specific calibration."
+  ]
+}

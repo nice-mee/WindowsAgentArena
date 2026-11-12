@@ -21,7 +21,7 @@ def save(path, value):
 def health(device):
     url = urlsplit(device.server_url)
     if url.hostname not in {"localhost", "127.0.0.1", "::1"}:
-        raise RuntimeError("Stage 1 requires a local Linux device and local trace files")
+        raise RuntimeError("This runner requires a local Linux device and local trace files")
     token = parse_qs(url.query).get("token", [""])[0]
     request = Request(
         f"{'https' if url.scheme == 'wss' else 'http'}://{url.netloc}/api/health",
@@ -38,27 +38,29 @@ def start_local(device_id, run_dir):
 
     config = yaml.safe_load(Path("config/ufo/mcp.yaml").read_text())
     entries = config["LinuxAgent"]["default"]["action"]
-    mcp = next(item for item in entries if item["namespace"] == "BashExecutor")
-    if mcp["type"] != "http" or mcp["host"] not in {"localhost", "127.0.0.1"}:
-        raise RuntimeError("--local-services requires a local HTTP BashExecutor")
-    port = int(mcp["port"])
-    with socket.socket() as probe:
-        probe.bind(("127.0.0.1", port))  # Refuse to interfere with an existing MCP.
+    commands = []
+    mcp_key = os.environ.get("UFO_MCP_API_KEY") or secrets.token_urlsafe(32)
+    for namespace, module, log_name in (
+        ("BashExecutor", "linux_mcp_server", "mcp"),
+        ("LinuxGUI", "linux_gui_mcp_server", "gui_mcp"),
+    ):
+        mcp = next(item for item in entries if item["namespace"] == namespace)
+        if mcp["type"] != "http" or mcp["host"] not in {"localhost", "127.0.0.1"}:
+            raise RuntimeError(f"--local-services requires a local HTTP {namespace}")
+        port = int(mcp["port"])
+        with socket.socket() as probe:
+            probe.bind(("127.0.0.1", port))  # Never take over an existing service.
+        os.environ[mcp.get("api_key_env", "UFO_MCP_API_KEY")] = mcp_key
+        commands.append((log_name, ["-m", f"ufo.client.mcp.http_servers.{module}",
+                                    "--host", "127.0.0.1", "--port", str(port)]))
     with socket.socket() as probe:
         probe.bind(("127.0.0.1", 0))
         server_port = probe.getsockname()[1]
-    key_env = mcp.get("api_key_env", "UFO_MCP_API_KEY")
-    mcp_key = os.environ.get(key_env) or secrets.token_urlsafe(32)
-    os.environ[key_env] = mcp_key
     os.environ["UFO_MCP_API_KEY"] = mcp_key
     server_key = secrets.token_urlsafe(32)
     url = f"ws://127.0.0.1:{server_port}/ws?token={server_key}"
-    commands = [
-        ("mcp", ["-m", "ufo.client.mcp.http_servers.linux_mcp_server",
-                 "--host", "127.0.0.1", "--port", str(port)]),
-        ("server", ["-m", "ufo.server.app", "--host", "127.0.0.1",
-                    "--port", str(server_port), "--platform", "linux", "--api-key", server_key]),
-    ]
+    commands.append(("server", ["-m", "ufo.server.app", "--host", "127.0.0.1",
+                                "--port", str(server_port), "--platform", "linux", "--api-key", server_key]))
     processes = []
 
     def launch(name, command):
@@ -116,6 +118,7 @@ async def execute(settings, run_dir):
             raise RuntimeError("Galaxy did not establish an idle Linux connection")
         save(run_dir / "initialization.json", {"status": "passed", "device": device.device_id})
         phase = "execution"
+        save(run_dir / "submission.json", {"status": "submitting", "device": device.device_id})
         result = await client.process_request(settings["request"])
         constellation = client._session.current_constellation if client._session else None
         tasks = constellation.to_dict()["tasks"] if constellation else {}
@@ -126,8 +129,14 @@ async def execute(settings, run_dir):
             t["status"] == "completed" and t.get("result", {}).get("status") == "completed"
             for t in tasks.values()
         ) and not (queue["is_busy"] or queue["pending_task_ids"] or queue["queued_task_ids"])
+        agent_status = result.get("session_results", {}).get("status")
+        completed = stopped and agent_status == "FINISH"
         save(run_dir / "execution.json", {
-            "status": "completed" if stopped and result.get("session_results", {}).get("status") == "FINISH" else "failed",
+            "status": "completed" if completed else "failed",
+            "error": None if completed else (
+                result.get("error") or f"Galaxy agent status={agent_status}; "
+                f"device task statuses={[t['status'] for t in tasks.values()]}; see galaxy.log"
+            ),
             "galaxy": result, "tasks": tasks, "device_queue": queue,
             "device_stopped_confirmed": stopped,
         })

@@ -1,0 +1,13 @@
+{
+  "name": "linux-stage3-pilots-mvp",
+  "cases": [
+    {
+      "id": "php_line_count",
+      "mode": "cli"
+    },
+    {
+      "id": "replace_text",
+      "mode": "gui"
+    }
+  ]
+}

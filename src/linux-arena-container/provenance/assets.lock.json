@@ -1,0 +1,568 @@
+{
+  "version": 1,
+  "osworld_commit": "8903ebeb0efdf74331bd7dc37ed91ccbbff22317",
+  "dataset_revision": "1e112283c4ecb08d6fed8069bca7de74fa2f12aa",
+  "prepared_at": "2026-11-10",
+  "files": [
+    {
+      "case_id": "archive_by_age",
+      "role": "definition",
+      "path": "provenance/upstream/archive_by_age/task.json",
+      "sha256": "a1f0241bac2ec5aab2bc2a08a33c160f54ef099804430bc931466aaceb967a3a",
+      "size": 2297,
+      "url": "https://raw.githubusercontent.com/xlang-ai/OSWorld/8903ebeb0efdf74331bd7dc37ed91ccbbff22317/evaluation_examples/examples/os/37887e8c-da15-4192-923c-08fa390a176d.json"
+    },
+    {
+      "case_id": "archive_by_age",
+      "role": "fixture",
+      "path": "fixtures/archive_by_age/test_files/new_file1.txt",
+      "sha256": "366f025c31f748c224467c38396a3b65dac5419b20b2eaf489af82a6e92f6718",
+      "size": 79,
+      "derived_from": "provenance/upstream/archive_by_age/setup.sh",
+      "origin": "Local fixed nonempty fixture; original directory layout retained; upstream script not executed"
+    },
+    {
+      "case_id": "archive_by_age",
+      "role": "fixture",
+      "path": "fixtures/archive_by_age/test_files/new_file2.txt",
+      "sha256": "02a6db079d84f1a820d078c7686c79cdf38e37a56be7466aeaea0558415278f7",
+      "size": 79,
+      "derived_from": "provenance/upstream/archive_by_age/setup.sh",
+      "origin": "Local fixed nonempty fixture; original directory layout retained; upstream script not executed"
+    },
+    {
+      "case_id": "archive_by_age",
+      "role": "fixture",
+      "path": "fixtures/archive_by_age/test_files/old_file1.txt",
+      "sha256": "b6f109c35d24e4b51808ca81f43f989c8c668c0fae0e9ef98570a43cd15f8a90",
+      "size": 79,
+      "derived_from": "provenance/upstream/archive_by_age/setup.sh",
+      "origin": "Local fixed nonempty fixture; original directory layout retained; upstream script not executed"
+    },
+    {
+      "case_id": "archive_by_age",
+      "role": "fixture",
+      "path": "fixtures/archive_by_age/test_files/old_file2.txt",
+      "sha256": "859a85c98f37d6c127c08493e2fe387c3a780760bff19019e2a5aa3e55bc1ec1",
+      "size": 79,
+      "derived_from": "provenance/upstream/archive_by_age/setup.sh",
+      "origin": "Local fixed nonempty fixture; original directory layout retained; upstream script not executed"
+    },
+    {
+      "case_id": "archive_by_age",
+      "role": "source",
+      "path": "provenance/upstream/archive_by_age/eval_20250703.sh",
+      "sha256": "41f156a67b45bcbd4eac0b44c1d997d9679d48d7a18e8e13b47c204ddb32f64c",
+      "size": 5916,
+      "url": "https://huggingface.co/datasets/xlangai/ubuntu_osworld_file_cache/resolve/1e112283c4ecb08d6fed8069bca7de74fa2f12aa/os/37887e8c-da15-4192-923c-08fa390a176d/eval_20250703.sh",
+      "original_url": "https://huggingface.co/datasets/xlangai/ubuntu_osworld_file_cache/resolve/main/os/37887e8c-da15-4192-923c-08fa390a176d/eval_20250703.sh"
+    },
+    {
+      "case_id": "archive_by_age",
+      "role": "source",
+      "path": "provenance/upstream/archive_by_age/setup.sh",
+      "sha256": "c8ce69c15d5a7e741b2696da0e09294fdd89aac63696c79ea7f2705597eecfcd",
+      "size": 746,
+      "url": "https://huggingface.co/datasets/xlangai/ubuntu_osworld_file_cache/resolve/1e112283c4ecb08d6fed8069bca7de74fa2f12aa/os/37887e8c-da15-4192-923c-08fa390a176d/setup.sh",
+      "original_url": "https://huggingface.co/datasets/xlangai/ubuntu_osworld_file_cache/resolve/main/os/37887e8c-da15-4192-923c-08fa390a176d/setup.sh"
+    },
+    {
+      "case_id": "collect_failed_notebooks",
+      "role": "definition",
+      "path": "provenance/upstream/collect_failed_notebooks/task.json",
+      "sha256": "6b57e8b32c048a252d8076fc280bf029f869e99e2938530ff78087aa7fdce410",
+      "size": 2469,
+      "url": "https://raw.githubusercontent.com/xlang-ai/OSWorld/8903ebeb0efdf74331bd7dc37ed91ccbbff22317/evaluation_examples/examples/os/5c1075ca-bb34-46a3-a7a0-029bd7463e79.json"
+    },
+    {
+      "case_id": "collect_failed_notebooks",
+      "role": "fixture",
+      "path": "fixtures/collect_failed_notebooks/project/dir1/a_failed.ipynb",
+      "sha256": "bbce3bae5a06eabb6742378a7e355276b63fc5f44201b6aa04812edae7984235",
+      "size": 270,
+      "derived_from": "provenance/upstream/collect_failed_notebooks/setup.sh",
+      "origin": "Local fixed nonempty fixture; original directory layout retained; upstream script not executed"
+    },
+    {
+      "case_id": "collect_failed_notebooks",
+      "role": "fixture",
+      "path": "fixtures/collect_failed_notebooks/project/dir1/b.ipynb",
+      "sha256": "8538dc0aa10c34154279018b6e21cd5009d911a28bec980aae8370f2edb65961",
+      "size": 263,
+      "derived_from": "provenance/upstream/collect_failed_notebooks/setup.sh",
+      "origin": "Local fixed nonempty fixture; original directory layout retained; upstream script not executed"
+    },
+    {
+      "case_id": "collect_failed_notebooks",
+      "role": "fixture",
+      "path": "fixtures/collect_failed_notebooks/project/dir2/d.ipynb",
+      "sha256": "93f3853c6bee38af010b915c8f8c73240b083b3fd5008a6e2e83e9ae657b4bc1",
+      "size": 263,
+      "derived_from": "provenance/upstream/collect_failed_notebooks/setup.sh",
+      "origin": "Local fixed nonempty fixture; original directory layout retained; upstream script not executed"
+    },
+    {
+      "case_id": "collect_failed_notebooks",
+      "role": "fixture",
+      "path": "fixtures/collect_failed_notebooks/project/dir2/subdir1/c_failed.ipynb",
+      "sha256": "916ec34d493f2c13daaa57ae628b5000cb194e84e2c4c5af2045c1c5f9d45278",
+      "size": 278,
+      "derived_from": "provenance/upstream/collect_failed_notebooks/setup.sh",
+      "origin": "Local fixed nonempty fixture; original directory layout retained; upstream script not executed"
+    },
+    {
+      "case_id": "collect_failed_notebooks",
+      "role": "fixture",
+      "path": "fixtures/collect_failed_notebooks/project/dir3/e_failed.ipynb",
+      "sha256": "517a36780a49b954c55e57ca92b422ddebdf7e3dc92027fde366a0bf97c25eb3",
+      "size": 270,
+      "derived_from": "provenance/upstream/collect_failed_notebooks/setup.sh",
+      "origin": "Local fixed nonempty fixture; original directory layout retained; upstream script not executed"
+    },
+    {
+      "case_id": "collect_failed_notebooks",
+      "role": "source",
+      "path": "provenance/upstream/collect_failed_notebooks/eval.sh",
+      "sha256": "ce6c816c9c29c78a9b0d8434f6ed8d8d94b0183db400397e3620f2b7feb2a692",
+      "size": 2107,
+      "url": "https://huggingface.co/datasets/xlangai/ubuntu_osworld_file_cache/resolve/1e112283c4ecb08d6fed8069bca7de74fa2f12aa/os/5c1075ca-bb34-46a3-a7a0-029bd7463e79/eval.sh",
+      "original_url": "https://huggingface.co/datasets/xlangai/ubuntu_osworld_file_cache/resolve/main/os/5c1075ca-bb34-46a3-a7a0-029bd7463e79/eval.sh"
+    },
+    {
+      "case_id": "collect_failed_notebooks",
+      "role": "source",
+      "path": "provenance/upstream/collect_failed_notebooks/setup.sh",
+      "sha256": "7e0eb76f38e9b891420fd4f469d4944c600db00cc0869b8781dc9ed8a7ede340",
+      "size": 497,
+      "url": "https://huggingface.co/datasets/xlangai/ubuntu_osworld_file_cache/resolve/1e112283c4ecb08d6fed8069bca7de74fa2f12aa/os/5c1075ca-bb34-46a3-a7a0-029bd7463e79/setup.sh",
+      "original_url": "https://huggingface.co/datasets/xlangai/ubuntu_osworld_file_cache/resolve/main/os/5c1075ca-bb34-46a3-a7a0-029bd7463e79/setup.sh"
+    },
+    {
+      "case_id": "collect_jpg",
+      "role": "definition",
+      "path": "provenance/upstream/collect_jpg/task.json",
+      "sha256": "9682045d7f9f3e73ecd29dafd485aa4376b02d75de13502d2a3eeb0f42341bf5",
+      "size": 3634,
+      "url": "https://raw.githubusercontent.com/xlang-ai/OSWorld/8903ebeb0efdf74331bd7dc37ed91ccbbff22317/evaluation_examples/examples/os/23393935-50c7-4a86-aeea-2b78fd089c5c.json"
+    },
+    {
+      "case_id": "collect_jpg",
+      "role": "fixture",
+      "path": "fixtures/collect_jpg/photos/events/emnlp2023.jpg",
+      "sha256": "f29dbb0ecc40d2517a7dd528448ea68dccf8d979bef6951c1146d4a5e089db71",
+      "size": 342815,
+      "url": "https://huggingface.co/datasets/xlangai/ubuntu_osworld_file_cache/resolve/1e112283c4ecb08d6fed8069bca7de74fa2f12aa/os/23393935-50c7-4a86-aeea-2b78fd089c5c/emnlp2023.jpg",
+      "original_url": "https://huggingface.co/datasets/xlangai/ubuntu_osworld_file_cache/resolve/main/os/23393935-50c7-4a86-aeea-2b78fd089c5c/emnlp2023.jpg"
+    },
+    {
+      "case_id": "collect_jpg",
+      "role": "fixture",
+      "path": "fixtures/collect_jpg/photos/family/us_3.png",
+      "sha256": "9e7a56130b24df94b1fa34364b533005c36cfd5ec506dbff4394e53665610df3",
+      "size": 305372,
+      "url": "https://huggingface.co/datasets/xlangai/ubuntu_osworld_file_cache/resolve/1e112283c4ecb08d6fed8069bca7de74fa2f12aa/os/23393935-50c7-4a86-aeea-2b78fd089c5c/us_3.png",
+      "original_url": "https://huggingface.co/datasets/xlangai/ubuntu_osworld_file_cache/resolve/main/os/23393935-50c7-4a86-aeea-2b78fd089c5c/us_3.png"
+    },
+    {
+      "case_id": "collect_jpg",
+      "role": "fixture",
+      "path": "fixtures/collect_jpg/photos/vacation/hk/hk_group_photo.jpg",
+      "sha256": "b510cb3593f77e29f283e0f72cc8708a64d21b0ef1fcba9a161cdcce620bb5e2",
+      "size": 52375,
+      "url": "https://huggingface.co/datasets/xlangai/ubuntu_osworld_file_cache/resolve/1e112283c4ecb08d6fed8069bca7de74fa2f12aa/os/23393935-50c7-4a86-aeea-2b78fd089c5c/hk_group_photo.jpg",
+      "original_url": "https://huggingface.co/datasets/xlangai/ubuntu_osworld_file_cache/resolve/main/os/23393935-50c7-4a86-aeea-2b78fd089c5c/hk_group_photo.jpg"
+    },
+    {
+      "case_id": "collect_jpg",
+      "role": "fixture",
+      "path": "fixtures/collect_jpg/photos/vacation/hk/hong-kong-china.jpg",
+      "sha256": "7c7ad32eb7c26a5341a7dd4c1fbc79cb94f00001b70ec2e7e682b113e82a0259",
+      "size": 190512,
+      "url": "https://huggingface.co/datasets/xlangai/ubuntu_osworld_file_cache/resolve/1e112283c4ecb08d6fed8069bca7de74fa2f12aa/os/23393935-50c7-4a86-aeea-2b78fd089c5c/hong-kong-china.jpg",
+      "original_url": "https://huggingface.co/datasets/xlangai/ubuntu_osworld_file_cache/resolve/main/os/23393935-50c7-4a86-aeea-2b78fd089c5c/hong-kong-china.jpg"
+    },
+    {
+      "case_id": "collect_jpg",
+      "role": "fixture",
+      "path": "fixtures/collect_jpg/photos/vacation/thailand/monk252520thailand252520wat252520arun252520scaled25255B225255D.jpg",
+      "sha256": "632a23dd017a77701fb35026ac98fb9835d1b2f6694efc6c59f2a7a51f89f2d5",
+      "size": 302041,
+      "url": "https://huggingface.co/datasets/xlangai/ubuntu_osworld_file_cache/resolve/1e112283c4ecb08d6fed8069bca7de74fa2f12aa/os/23393935-50c7-4a86-aeea-2b78fd089c5c/monk252520thailand252520wat252520arun252520scaled25255B225255D.jpg",
+      "original_url": "https://huggingface.co/datasets/xlangai/ubuntu_osworld_file_cache/resolve/main/os/23393935-50c7-4a86-aeea-2b78fd089c5c/monk252520thailand252520wat252520arun252520scaled25255B225255D.jpg"
+    },
+    {
+      "case_id": "config",
+      "role": "fixture",
+      "path": "fixtures/config/after.conf",
+      "sha256": "e296fd5fdc0828668d0944a2224caf2bec43192f2122f769ce685f63d97e6f2e",
+      "size": 57,
+      "origin": "AgentArena stage 1 fixed fixture"
+    },
+    {
+      "case_id": "config",
+      "role": "fixture",
+      "path": "fixtures/config/before.conf",
+      "sha256": "0c040a4f618e33a9049724a0c86a496cdc89bde435ac93e935dfa6c63d8c5e15",
+      "size": 58,
+      "origin": "AgentArena stage 1 fixed fixture"
+    },
+    {
+      "case_id": "logs",
+      "role": "fixture",
+      "path": "fixtures/logs/app.log",
+      "sha256": "b6204279ac314fdd1261539da7e1046a1dd8b0d445c2856e7e5c21d95cb0db0e",
+      "size": 534,
+      "origin": "AgentArena stage 1 fixed fixture"
+    },
+    {
+      "case_id": "monthly_sales",
+      "role": "definition",
+      "path": "provenance/upstream/monthly_sales/task.json",
+      "sha256": "4e4cb9df003e43ca1bba4561e745912631ff8c41cf3acb00fe48d196f0a2bd20",
+      "size": 2281,
+      "url": "https://raw.githubusercontent.com/xlang-ai/OSWorld/8903ebeb0efdf74331bd7dc37ed91ccbbff22317/evaluation_examples/examples/libreoffice_calc/26a8440e-c166-4c50-aef4-bfb77314b46b.json"
+    },
+    {
+      "case_id": "monthly_sales",
+      "role": "fixture",
+      "path": "fixtures/monthly_sales/SalesRep.xlsx",
+      "sha256": "f4e54c5b2394e7c7dc5975d1f0bea29f93227aa435827d6649ce86b64734428f",
+      "size": 9500,
+      "url": "https://huggingface.co/datasets/xlangai/ubuntu_osworld_file_cache/resolve/1e112283c4ecb08d6fed8069bca7de74fa2f12aa/libreoffice_calc/0326d92d-d218-48a8-9ca1-981cd6d064c7/SalesRep.xlsx",
+      "original_url": "https://huggingface.co/datasets/xlangai/ubuntu_osworld_file_cache/resolve/main/libreoffice_calc/0326d92d-d218-48a8-9ca1-981cd6d064c7/SalesRep.xlsx"
+    },
+    {
+      "case_id": "monthly_sales",
+      "role": "reference",
+      "path": "references/monthly_sales/3_SalesRep_gt1.xlsx",
+      "sha256": "36aeeb9844db1b4ca03e5e736773ad62088757eb37694ff452464f774c9b0b28",
+      "size": 10094,
+      "url": "https://huggingface.co/datasets/xlangai/ubuntu_osworld_file_cache/resolve/1e112283c4ecb08d6fed8069bca7de74fa2f12aa/libreoffice_calc/26a8440e-c166-4c50-aef4-bfb77314b46b/3_SalesRep_gt1.xlsx",
+      "original_url": "https://huggingface.co/datasets/xlangai/ubuntu_osworld_file_cache/resolve/main/libreoffice_calc/26a8440e-c166-4c50-aef4-bfb77314b46b/3_SalesRep_gt1.xlsx"
+    },
+    {
+      "case_id": "normalize_permissions",
+      "role": "definition",
+      "path": "provenance/upstream/normalize_permissions/task.json",
+      "sha256": "015c77ef82775babe8040ff0785ffc26d4a0f311e53e32eef0270d7fd81ad4f2",
+      "size": 2537,
+      "url": "https://raw.githubusercontent.com/xlang-ai/OSWorld/8903ebeb0efdf74331bd7dc37ed91ccbbff22317/evaluation_examples/examples/os/4d117223-a354-47fb-8b45-62ab1390a95f.json"
+    },
+    {
+      "case_id": "normalize_permissions",
+      "role": "fixture",
+      "path": "fixtures/normalize_permissions/testDir/file1.txt",
+      "sha256": "1275ed90bdf0a35160faab834f143e636dc39839a08368969cfb53050d25e8f8",
+      "size": 66,
+      "derived_from": "provenance/upstream/normalize_permissions/setup.sh",
+      "origin": "Local fixed nonempty fixture; original directory layout retained; upstream script not executed"
+    },
+    {
+      "case_id": "normalize_permissions",
+      "role": "fixture",
+      "path": "fixtures/normalize_permissions/testDir/subDir1/file2.txt",
+      "sha256": "e90ae09a4351d698e03c0431103b67d1cb33aa7788131368b3063171bbbbe20a",
+      "size": 74,
+      "derived_from": "provenance/upstream/normalize_permissions/setup.sh",
+      "origin": "Local fixed nonempty fixture; original directory layout retained; upstream script not executed"
+    },
+    {
+      "case_id": "normalize_permissions",
+      "role": "fixture",
+      "path": "fixtures/normalize_permissions/testDir/subDir2/file3.txt",
+      "sha256": "c21df89b0f070adddbed3c6425c2279065ec45cc92b638f0b89f0051835db494",
+      "size": 74,
+      "derived_from": "provenance/upstream/normalize_permissions/setup.sh",
+      "origin": "Local fixed nonempty fixture; original directory layout retained; upstream script not executed"
+    },
+    {
+      "case_id": "normalize_permissions",
+      "role": "source",
+      "path": "provenance/upstream/normalize_permissions/eval.sh",
+      "sha256": "cad4de489a969620400ccc393d91dfc8430ed0548aa0b6176beec2a8c725c991",
+      "size": 634,
+      "url": "https://huggingface.co/datasets/xlangai/ubuntu_osworld_file_cache/resolve/1e112283c4ecb08d6fed8069bca7de74fa2f12aa/os/4d117223-a354-47fb-8b45-62ab1390a95f/eval.sh",
+      "original_url": "https://huggingface.co/datasets/xlangai/ubuntu_osworld_file_cache/resolve/main/os/4d117223-a354-47fb-8b45-62ab1390a95f/eval.sh"
+    },
+    {
+      "case_id": "normalize_permissions",
+      "role": "source",
+      "path": "provenance/upstream/normalize_permissions/setup.sh",
+      "sha256": "66d5f82285fb184699f607f6127568509ae2c4d7d08aac91dda972ac6ba93254",
+      "size": 436,
+      "url": "https://huggingface.co/datasets/xlangai/ubuntu_osworld_file_cache/resolve/1e112283c4ecb08d6fed8069bca7de74fa2f12aa/os/4d117223-a354-47fb-8b45-62ab1390a95f/setup.sh",
+      "original_url": "https://huggingface.co/datasets/xlangai/ubuntu_osworld_file_cache/resolve/main/os/4d117223-a354-47fb-8b45-62ab1390a95f/setup.sh"
+    },
+    {
+      "case_id": "php_line_count",
+      "role": "definition",
+      "path": "provenance/upstream/php_line_count/task.json",
+      "sha256": "ebfa1d3284675a98ec44b2ba8cc873dad35b4996ed6ea681288d9e2613fe753d",
+      "size": 1450,
+      "url": "https://raw.githubusercontent.com/xlang-ai/OSWorld/8903ebeb0efdf74331bd7dc37ed91ccbbff22317/evaluation_examples/examples/os/4127319a-8b79-4410-b58a-7a151e15f3d7.json"
+    },
+    {
+      "case_id": "php_line_count",
+      "role": "fixture",
+      "path": "fixtures/php_line_count/project/controllers/UserController.php",
+      "sha256": "35032ec954a596269663a59a6f49fb8c10b3f59f02598f854c71ee4e16ec7646",
+      "size": 320,
+      "derived_from": "provenance/upstream/php_line_count/setup.sh"
+    },
+    {
+      "case_id": "php_line_count",
+      "role": "fixture",
+      "path": "fixtures/php_line_count/project/index.php",
+      "sha256": "b6d9548554659d035ec48b352bfe135231c67bac0d5fb0a1063ab15496a7fe95",
+      "size": 165,
+      "derived_from": "provenance/upstream/php_line_count/setup.sh"
+    },
+    {
+      "case_id": "php_line_count",
+      "role": "fixture",
+      "path": "fixtures/php_line_count/project/models/User.php",
+      "sha256": "05b4eea5b0589e05510753fef40ec22ea999e48f5da7eb132a051a43c4795b78",
+      "size": 365,
+      "derived_from": "provenance/upstream/php_line_count/setup.sh"
+    },
+    {
+      "case_id": "php_line_count",
+      "role": "fixture",
+      "path": "fixtures/php_line_count/project/views/home.php",
+      "sha256": "0a93d0526e91320d693807be0115d5f27a158ace327fa26924a50fd4080aff74",
+      "size": 167,
+      "derived_from": "provenance/upstream/php_line_count/setup.sh"
+    },
+    {
+      "case_id": "php_line_count",
+      "role": "source",
+      "path": "provenance/upstream/php_line_count/setup.sh",
+      "sha256": "da618b6625232a439e5bf4a0d64ab10a249d798674161f60f1dca9f032565e47",
+      "size": 1233,
+      "url": "https://huggingface.co/datasets/xlangai/ubuntu_osworld_file_cache/resolve/1e112283c4ecb08d6fed8069bca7de74fa2f12aa/os/4127319a-8b79-4410-b58a-7a151e15f3d7/setup.sh",
+      "original_url": "https://huggingface.co/datasets/xlangai/ubuntu_osworld_file_cache/resolve/main/os/4127319a-8b79-4410-b58a-7a151e15f3d7/setup.sh"
+    },
+    {
+      "case_id": "purchase_order_reconcile",
+      "role": "fixture",
+      "path": "fixtures/purchase_order_reconcile/Purchase_Order_Form.xlsx",
+      "sha256": "f574916a99526fe3917756ec833489f23b1452dde7e0c1ae90eb63112119e4c8",
+      "size": 8563,
+      "origin": "local-derived; OSWorld 2.0 paper v2, Task 035",
+      "derived_from": "provenance/upstream/purchase_order_reconcile/source.md"
+    },
+    {
+      "case_id": "purchase_order_reconcile",
+      "role": "fixture",
+      "path": "fixtures/purchase_order_reconcile/messages/direct.html",
+      "sha256": "7e50840aaed090298a9e588e2bcfa636181f738ea35ad75dc4f88d47e1221825",
+      "size": 1427,
+      "origin": "local-derived; OSWorld 2.0 paper v2, Task 035",
+      "derived_from": "provenance/upstream/purchase_order_reconcile/source.md"
+    },
+    {
+      "case_id": "purchase_order_reconcile",
+      "role": "fixture",
+      "path": "fixtures/purchase_order_reconcile/messages/finance.html",
+      "sha256": "ded3b70bcfa3d3531717ab8a614bd7895bb9f96ea8c583342f4a99564ccfbf91",
+      "size": 1417,
+      "origin": "local-derived; OSWorld 2.0 paper v2, Task 035",
+      "derived_from": "provenance/upstream/purchase_order_reconcile/source.md"
+    },
+    {
+      "case_id": "purchase_order_reconcile",
+      "role": "fixture",
+      "path": "fixtures/purchase_order_reconcile/messages/index.html",
+      "sha256": "123c5cf5aea4fec50fa03def40a31c6dbf4b1dc23866cff8c61884acdbc4cc05",
+      "size": 1843,
+      "origin": "local-derived; OSWorld 2.0 paper v2, Task 035",
+      "derived_from": "provenance/upstream/purchase_order_reconcile/source.md"
+    },
+    {
+      "case_id": "purchase_order_reconcile",
+      "role": "reference",
+      "path": "references/purchase_order_reconcile/Purchase_Order_Form.xlsx",
+      "sha256": "049ffe7749b23f596247b54d34197214366b3f87773e6b4b3ddd55932250b6c9",
+      "size": 8794,
+      "origin": "local-derived; OSWorld 2.0 paper v2, Task 035",
+      "derived_from": "provenance/upstream/purchase_order_reconcile/source.md"
+    },
+    {
+      "case_id": "purchase_order_reconcile",
+      "role": "reference",
+      "path": "references/purchase_order_reconcile/expected.json",
+      "sha256": "0eb49f9c40b89960104994d55741d4fd4663c4cdbad0c319a5a970d1b12ac23a",
+      "size": 861,
+      "origin": "local-derived; OSWorld 2.0 paper v2, Task 035",
+      "derived_from": "provenance/upstream/purchase_order_reconcile/source.md"
+    },
+    {
+      "case_id": "purchase_order_reconcile",
+      "role": "source",
+      "path": "provenance/upstream/purchase_order_reconcile/source.md",
+      "sha256": "98dbc52f16b440031f28c4d89595c1be7ef48519123d83700b4023623603cf2a",
+      "size": 556,
+      "origin": "local-derived; OSWorld 2.0 paper v2, Task 035"
+    },
+    {
+      "case_id": "replace_text",
+      "role": "definition",
+      "path": "provenance/upstream/replace_text/task.json",
+      "sha256": "ba53fb30a0d1064b46a68babbad9b082bb79b7228788c4643fca828c17c075ff",
+      "size": 2131,
+      "url": "https://raw.githubusercontent.com/xlang-ai/OSWorld/8903ebeb0efdf74331bd7dc37ed91ccbbff22317/evaluation_examples/examples/vs_code/0ed39f63-6049-43d4-ba4d-5fa2fe04a951.json"
+    },
+    {
+      "case_id": "replace_text",
+      "role": "fixture",
+      "path": "fixtures/replace_text/vscode_replace_text.txt",
+      "sha256": "fddd104baad484309a4dec480879bfa5ea452e6aef9131024f06132a931cfd58",
+      "size": 637,
+      "url": "https://huggingface.co/datasets/xlangai/ubuntu_osworld_file_cache/resolve/1e112283c4ecb08d6fed8069bca7de74fa2f12aa/vs_code/0ed39f63-6049-43d4-ba4d-5fa2fe04a951/vscode_replace_text.txt",
+      "original_url": "https://huggingface.co/datasets/xlangai/ubuntu_osworld_file_cache/resolve/main/vs_code/0ed39f63-6049-43d4-ba4d-5fa2fe04a951/vscode_replace_text.txt"
+    },
+    {
+      "case_id": "replace_text",
+      "role": "reference",
+      "path": "references/replace_text/vscode_replace_text_gold.txt",
+      "sha256": "8dad55e80d4f415f90affbb2ca44efdbef153f54ff4b21c21e903743aeaed93d",
+      "size": 637,
+      "url": "https://huggingface.co/datasets/xlangai/ubuntu_osworld_file_cache/resolve/1e112283c4ecb08d6fed8069bca7de74fa2f12aa/vs_code/0ed39f63-6049-43d4-ba4d-5fa2fe04a951/vscode_replace_text_gold.txt",
+      "original_url": "https://huggingface.co/datasets/xlangai/ubuntu_osworld_file_cache/resolve/main/vs_code/0ed39f63-6049-43d4-ba4d-5fa2fe04a951/vscode_replace_text_gold.txt"
+    },
+    {
+      "case_id": "slide_style_match",
+      "role": "fixture",
+      "path": "fixtures/slide_style_match/Project_Update.odp",
+      "sha256": "d35061843631797a119bff5614a26aac721b6c2145a04403b1bc5caa941c34b6",
+      "size": 2809,
+      "origin": "local-derived; OSWorld 2.0 paper v2, Task 004",
+      "derived_from": "provenance/upstream/slide_style_match/source.md"
+    },
+    {
+      "case_id": "slide_style_match",
+      "role": "reference",
+      "path": "references/slide_style_match/Project_Update.odp",
+      "sha256": "9935582bf1b94d2a8c207e62a819112b4aaf0aea7db6791ff6d18a137bb4d552",
+      "size": 2753,
+      "origin": "local-derived; OSWorld 2.0 paper v2, Task 004",
+      "derived_from": "provenance/upstream/slide_style_match/source.md"
+    },
+    {
+      "case_id": "slide_style_match",
+      "role": "source",
+      "path": "provenance/upstream/slide_style_match/source.md",
+      "sha256": "778f9922df28bc11d9ce8c1eba20808526e5893bcb96bfb41719412c79a8bc58",
+      "size": 450,
+      "origin": "local-derived; OSWorld 2.0 paper v2, Task 004"
+    },
+    {
+      "case_id": "sort_and_chart",
+      "role": "definition",
+      "path": "provenance/upstream/sort_and_chart/task.json",
+      "url": "https://raw.githubusercontent.com/xlang-ai/OSWorld/8903ebeb0efdf74331bd7dc37ed91ccbbff22317/evaluation_examples/examples/libreoffice_calc/3a7c8185-25c1-4941-bd7b-96e823c9f21f.json",
+      "size": 2511,
+      "sha256": "780d75625fb67a279b07889aeca23ec107cb66aff9927d4055d33ecf7fceea2b"
+    },
+    {
+      "case_id": "sort_and_chart",
+      "role": "fixture",
+      "path": "fixtures/sort_and_chart/BoomerangSales.xlsx",
+      "url": "https://huggingface.co/datasets/xlangai/ubuntu_osworld_file_cache/resolve/1e112283c4ecb08d6fed8069bca7de74fa2f12aa/libreoffice_calc/51719eea-10bc-4246-a428-ac7c433dd4b3/BoomerangSales.xlsx",
+      "size": 12387,
+      "sha256": "9962eddeb2e47c89d67374922dce5065a65e233bd806eb024506b4c6647bd6b2"
+    },
+    {
+      "case_id": "sort_and_chart",
+      "role": "reference",
+      "path": "references/sort_and_chart/6_BoomerangSales_gt1.xlsx",
+      "url": "https://huggingface.co/datasets/xlangai/ubuntu_osworld_file_cache/resolve/1e112283c4ecb08d6fed8069bca7de74fa2f12aa/libreoffice_calc/3a7c8185-25c1-4941-bd7b-96e823c9f21f/6_BoomerangSales_gt1.xlsx",
+      "size": 18482,
+      "sha256": "6b8bc4c4996c9137093259752be2886deec297f8d0b34b6169e188def48d401a"
+    },
+    {
+      "case_id": "unique_names",
+      "role": "definition",
+      "path": "provenance/upstream/unique_names/task.json",
+      "url": "https://raw.githubusercontent.com/xlang-ai/OSWorld/8903ebeb0efdf74331bd7dc37ed91ccbbff22317/evaluation_examples/examples/libreoffice_calc/abed40dc-063f-4598-8ba5-9fe749c0615d.json",
+      "size": 2427,
+      "sha256": "e0f67b3c0dfdfff58a311fb78e9371dff848643a04ad489ea35f050e08bc7d2c"
+    },
+    {
+      "case_id": "unique_names",
+      "role": "fixture",
+      "path": "fixtures/unique_names/Names_Duplicate_Unique.xlsx",
+      "url": "https://huggingface.co/datasets/xlangai/ubuntu_osworld_file_cache/resolve/1e112283c4ecb08d6fed8069bca7de74fa2f12aa/libreoffice_calc/abed40dc-063f-4598-8ba5-9fe749c0615d/Names_Duplicate_Unique.xlsx",
+      "size": 5200,
+      "sha256": "0b4de861a9ad5caa5564d1a840abd1644cb4877766eae53ad13185a3df93563b"
+    },
+    {
+      "case_id": "unique_names",
+      "role": "reference",
+      "path": "references/unique_names/Names_Duplicate_Unique_gold.xlsx",
+      "url": "https://huggingface.co/datasets/xlangai/ubuntu_osworld_file_cache/resolve/1e112283c4ecb08d6fed8069bca7de74fa2f12aa/libreoffice_calc/abed40dc-063f-4598-8ba5-9fe749c0615d/Names_Duplicate_Unique_gold.xlsx",
+      "size": 5639,
+      "sha256": "c5016d9487a680a3ebdbc68e7cda8ba2d5544bf3f6189048e1a63ad0cc9fa95f"
+    },
+    {
+      "case_id": "writer_cross_reference",
+      "role": "definition",
+      "path": "provenance/upstream/writer_cross_reference/task.json",
+      "url": "https://raw.githubusercontent.com/xlang-ai/OSWorld/8903ebeb0efdf74331bd7dc37ed91ccbbff22317/evaluation_examples/examples/libreoffice_writer/adf5e2c3-64c7-4644-b7b6-d2f0167927e7.json",
+      "size": 2375,
+      "sha256": "29ed30973a11578413f942f48351e1c6e85450ac47bb345c8047e28cd02c686d"
+    },
+    {
+      "case_id": "writer_cross_reference",
+      "role": "fixture",
+      "path": "fixtures/writer_cross_reference/Essay_Writing_English_for_uni.docx",
+      "url": "https://huggingface.co/datasets/xlangai/ubuntu_osworld_file_cache/resolve/1e112283c4ecb08d6fed8069bca7de74fa2f12aa/libreoffice_writer/adf5e2c3-64c7-4644-b7b6-d2f0167927e7/Essay_Writing_English_for_uni.docx",
+      "size": 16721,
+      "sha256": "245f3064d64dead11e37b341ca5ab42e4435c6ac63ad0fe14c3f7513a37e249a"
+    },
+    {
+      "case_id": "writer_cross_reference",
+      "role": "reference",
+      "path": "references/writer_cross_reference/Essay_Writing_English_for_uni_Gold.docx",
+      "url": "https://huggingface.co/datasets/xlangai/ubuntu_osworld_file_cache/resolve/1e112283c4ecb08d6fed8069bca7de74fa2f12aa/libreoffice_writer/adf5e2c3-64c7-4644-b7b6-d2f0167927e7/Essay_Writing_English_for_uni_Gold.docx",
+      "size": 18244,
+      "sha256": "1ae0d141428acee7fd1221d9f7cc0cfcbb50316bc5998ae4bd7ba8842ddec05b"
+    },
+    {
+      "case_id": "zoom_out",
+      "role": "definition",
+      "path": "provenance/upstream/zoom_out/task.json",
+      "sha256": "9465bce469f898817e0f124ef9bc3f99eb7443a2fa94a3050a6491d1b60a7761",
+      "size": 2430,
+      "url": "https://raw.githubusercontent.com/xlang-ai/OSWorld/8903ebeb0efdf74331bd7dc37ed91ccbbff22317/evaluation_examples/examples/libreoffice_calc/1334ca3e-f9e3-4db8-9ca7-b4c653be7d17.json"
+    },
+    {
+      "case_id": "zoom_out",
+      "role": "fixture",
+      "path": "fixtures/zoom_out/Zoom_Out_Oversized_Cells.xlsx",
+      "sha256": "5eff9cf0ce47825fcac953282fcbc7cf144f12cf99f1ad6914ae345a0a995967",
+      "size": 7176,
+      "url": "https://huggingface.co/datasets/xlangai/ubuntu_osworld_file_cache/resolve/1e112283c4ecb08d6fed8069bca7de74fa2f12aa/libreoffice_calc/1334ca3e-f9e3-4db8-9ca7-b4c653be7d17/Zoom_Out_Oversized_Cells.xlsx",
+      "original_url": "https://huggingface.co/datasets/xlangai/ubuntu_osworld_file_cache/resolve/main/libreoffice_calc/1334ca3e-f9e3-4db8-9ca7-b4c653be7d17/Zoom_Out_Oversized_Cells.xlsx"
+    },
+    {
+      "case_id": "zoom_out",
+      "role": "reference",
+      "path": "references/zoom_out/Zoom_Out_Oversized_Cells_gold.xlsx",
+      "sha256": "1037fff18170ffc1b38eee0f812b958339980e0b220b92a1628b32fdd26be7f0",
+      "size": 7176,
+      "url": "https://huggingface.co/datasets/xlangai/ubuntu_osworld_file_cache/resolve/1e112283c4ecb08d6fed8069bca7de74fa2f12aa/libreoffice_calc/1334ca3e-f9e3-4db8-9ca7-b4c653be7d17/Zoom_Out_Oversized_Cells_gold.xlsx",
+      "original_url": "https://huggingface.co/datasets/xlangai/ubuntu_osworld_file_cache/resolve/main/libreoffice_calc/1334ca3e-f9e3-4db8-9ca7-b4c653be7d17/Zoom_Out_Oversized_Cells_gold.xlsx"
+    }
+  ],
+  "license": {
+    "source_spdx": "Apache-2.0",
+    "source_url": "https://raw.githubusercontent.com/xlang-ai/OSWorld/8903ebeb0efdf74331bd7dc37ed91ccbbff22317/LICENSE",
+    "path": "provenance/upstream/LICENSE.OSWorld",
+    "sha256": "a8d1d88a0f9cce3cdbff73b03a80dc5e5d69e3ba2443946c268815a550c9e0ec",
+    "dataset_declared_spdx": "Apache-2.0",
+    "dataset_metadata": "provenance/upstream/dataset-metadata.json",
+    "scope_note": "Dataset declaration retained; individual image attribution and rights not independently established."
+  },
+  "source_note": "osworld_commit and dataset_revision pin OSWorld 1 files only; locally authored OSWorld 2 adaptations identify their source per entry."
+}

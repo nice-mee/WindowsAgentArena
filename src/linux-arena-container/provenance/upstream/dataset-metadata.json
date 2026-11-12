@@ -1,0 +1,13 @@
+{
+  "id": "xlangai/ubuntu_osworld_file_cache",
+  "sha": "1e112283c4ecb08d6fed8069bca7de74fa2f12aa",
+  "lastModified": "2026-08-06T08:52:15.000Z",
+  "cardData": {
+    "license": "apache-2.0"
+  },
+  "tags": [
+    "license:apache-2.0",
+    "arxiv:2404.07972",
+    "region:us"
+  ]
+}

@@ -14,7 +14,15 @@
 - 评测仓库：`AgentArena/`；UFO³ 仓库：同级 `../UFO3/`。
 - `src/win-arena-container/` 是已有 Windows 评测实现，可参考任务组织和评分逻辑。
 - 新开发位置：`src/linux-arena-container/`、`src/mobile-arena-container/`。
-- 编写本文时，两个新目录已存在但没有实现文件；当前尚未跑通新评测流水线。
+- 2026-11-02 更新：第一阶段 Linux 流水线已实现并真实跑通，包含日志统计和配置比较两个案例。详见 [Linux 验证记录](src/linux-arena-container/VALIDATION.md)。
+- 2026-11-03 更新：Mobile 入口代码已实现用户指定的微信 Flint 咖啡邀约、PIN 解锁、北京海淀天气三个案例。用户已运行旧版浦东天气案例，执行成功但前台包名解析缺失导致验收误判。当前修正取证兼容性，三个请求改成简短用户口吻，移除 JSON/run_id/包名等回答约束；微信和天气保持基于实际证据的人工验收。当前版本仅离线验证，尚未重跑真机。详见 [Mobile 使用说明](src/mobile-arena-container/README.md)。
+- 2026-11-05 更新：第三步覆盖 Linux CLI/GUI 案例扩充、OSWorld 素材预下载，以及 Linux `cases.py` 拆包。
+- 2026-11-05 首版实现：Linux 已拆为显式 `cases/` 包，新增 PHP 行数统计 CLI 试点和 Linux/Mobile 串行批次，33 个 OSWorld 相关文件已固定版本与哈希。PHP 重新初始化后真实验收通过；`logs/config` 自然请求版执行结束、待人工复核。当次运行缺少 GUI 工具，且无在线 ADB 设备，详见 [第三步首版验证](src/linux-arena-container/STAGE3_VALIDATION.md)。这些是历史环境记录，第三步尚未整体完成。
+- 2026-11-06 MVP 范围调整：用户已将 UFO 工具配备交给其他 Agent，评测端按所需工具均可执行推进。后续先补齐 Linux 剩余七题的初始化、请求和结果比较，复用现有运行流程；不新增检查、审核或通用管理机制。具体顺序与完成标准以下文第三步为准。
+- 2026-11-06 MVP 实现：Linux 十题已全部注册和启用，新增七题的初始化与产物比较完成；新增 12 份固定输入，素材共 45 个锁定条目。`logs/config` 增加自然回答字段提取，GUI 使用本轮独立应用实例。23 项离线检查通过。真实 GUI 试跑超时，随后 baseline 因模型接口余额不足失败；尚未完成十题端到端验收。详见 [第三步验证记录](src/linux-arena-container/STAGE3_VALIDATION.md)。
+- 2026-11-08 Mobile MVP 首版：按用户最新要求扩充 Mobile，新增五个应用导航和四个系统设置案例，与原三题共 12 题。默认九题直接接入 Galaxy 串行评测，自动判分和恢复设置；已整理 `cases/`、`suites/`、`tests/`、`docs/`。30 项离线检查通过；只读探测未发现在线 ADB 设备，尚未运行新增九题的真机端到端评测。本轮未修改 UFO3。详见 [Mobile 验证记录](src/mobile-arena-container/docs/VALIDATION.md)。
+- 2026-11-11 Linux 十五题整理：默认批次已切换到 `linux15.json`，原十题与新增五题保留为子集；完整评级为 8 easy＋5 medium＋2 hard，列表与结果均显示难度。当前本地 UFO Linux 的 GUI 工具和视觉输入仍待接入，应用初始化成功不代表 GUI 链路可用。详见 [Linux README](src/linux-arena-container/README.md)。
+- 2026-11-12 Linux 接口联调：UFO 已提供 LinuxGUI 与 Bash 工具；评测端 `--local-services` 现同时启动两个 MCP、设备服务和客户端。真实接口检查通过，十五题重复初始化检查通过；本次不调用模型、不运行正式批次。命令和素材恢复说明见 [Linux README](src/linux-arena-container/README.md)。
 - 本机已有 Linux 和 Mobile 控制能力，优先复用现有 Galaxy、设备客户端和 MCP 服务配置。连接状态、设备 ID、端口等以运行时实际情况为准。
 - 前期不使用 Docker 和虚拟机。目录名称中的 `container` 只是沿用项目命名，不代表必须实现容器部署。
 - 当前本地仓库是上游 WindowsAgentArena 的 `main` 分支，不能假定它与讨论中的 `osworld` 分支完全一致；复用文件前检查实际内容。
@@ -83,17 +91,71 @@
 
 本步完成标准：1–2 个案例经过真实 Galaxy → MobileAgent → 手机操作链路完成，初始化与验收均可重复；记录本机型号、系统版本、应用版本及必要的人工前置条件。清理只针对测试记录，不清空个人应用数据或恢复整机出厂设置。
 
-## 第三步：扩展为每种系统约 10 个案例
+## 第三步：按 MVP 扩充 Linux 与 Mobile 案例
 
-在前两步跑通后，分别扩展 Linux 和 Mobile 案例。每种系统约 10 个案例，包含前两步已有案例。
+2026-11-12 当前范围：按用户确认方案先准备 Linux，新增 `unique_names`、`sort_and_chart`、
+`writer_cross_reference` 三道 medium，以及 `slide_style_match`、`purchase_order_reconcile` 两道 hard。
+十五题的素材与验收均已实现，默认批次为 `linux15.json`；`linux10.json` 和 `gui5.json` 为可选子集。
+原十题初评 8 easy＋2 medium，完整题库为 8 easy＋5 medium＋2 hard。
+只复用现有初始化、Galaxy 接入、产物验收和清理；采购题使用静态本地消息页，不搭建聊天后台。
+Mobile 本批不扩充，UFO 工具仍由其他 Agent 维护。题目详情见 [Linux GUI5](docs/Linux-GUI5-MVP.md)。
+下方 2026-11-08 与 2026-11-06 内容保留原批次背景，不代表本轮仍限十题。
 
-- Linux：根据实际工具能力，逐步覆盖文件检索、日志分析、配置比较、数据汇总；需要新增写入或执行能力时再作最小扩展。
-- Mobile：围绕本机少数应用，扩展检索、筛选、新建、修改、保存及设置调整等操作，避免仅替换文本来凑数量。
-- 可参考公开数据集的任务设计、素材和验收方式；记录来源、版本和适配改动，并核对素材使用条件。
-- 每个案例都必须具有明确的初始状态和可检查的结果。以本机能执行、能复测为准，不照搬不适用的应用与环境要求。
-- 对失败保留原因与轨迹，不通过放宽评分或增加隐式纠错来掩盖问题。
+2026-11-08 更新。Linux 十题的评测端代码已完成，真实运行仍待联调。按用户最新要求，当前增加 Mobile 首版开发：新增 8–10 个简单手机操作案例、直接接入 Galaxy 一键评测、整理文件组织；先交付代码与验证说明，再讨论后续。无需等待 Linux 十题真实运行完成才开发这批 Mobile 代码，但不据此宣称整个第三步已验收。UFO 的截图、鼠标键盘、文件操作等工具由其他 Agent 负责，评测端按相应工具均可执行设计，不把工具开发列为本批次任务。
 
-本步完成标准：两类案例均可由各自入口批量串行运行，输出逐题结果与汇总，并交代未执行、失败和验收异常的情况。
+### 3.1 Linux 十五题当前范围
+
+十五个案例均已显式注册并启用，共 7 CLI＋8 GUI。固定素材、单题初始化、自然请求、
+结果验收、串行批次与清理复用现有实现，不再按“待实现七题”推进。
+完整题目表、评级和命令以 [Linux README](src/linux-arena-container/README.md) 为准；
+原十题迁移背景见 [迁移手册](docs/OSWorld-Linux-Migration-Plan.md)，五道扩充题的详细约定见
+[十五题难度与 GUI 扩充说明](docs/Linux-GUI5-MVP.md)。
+
+- easy（8）：`logs`、`config`、`php_line_count`、`collect_jpg`、`collect_failed_notebooks`、`normalize_permissions`、`replace_text`、`zoom_out`。
+- medium（5）：`archive_by_age`、`monthly_sales`、`unique_names`、`sort_and_chart`、`writer_cross_reference`。
+- hard（2）：`slide_style_match`、`purchase_order_reconcile`。
+
+评级描述本地素材及指定交互方式的复杂度，参考上游人工轨迹，但不是 OSWorld 官方标签。
+难度以案例模块的 `DIFFICULTY` 为准，题目列表、运行快照和结果读取同一值，不增加加权评分。
+
+### 3.2 沿用当前接口和运行边界
+
+```python
+setup(work)                         # 准备输入，返回本题需要的初始状态
+make_request(work)                  # 自然用户请求，附必要素材路径
+verify(work, state, answers, traces) # 根据本轮实际结果验收
+```
+
+- 固定输入在 `fixtures/<case_id>/`，每轮复制到独立 `materials/`；来源和参考答案留在评测端。素材已经准备，不新增素材审核流程。
+- GUI 由 `desktop.py` 打开本轮独立应用实例，支持 VS Code、Calc、Writer、Impress、Chrome；采购题同时打开浏览器和工作簿。沿用本机桌面，不增加虚拟机或通用桌面恢复系统。
+- 请求保留自然用户口吻，不提前提供完整操作步骤或任务 DAG。GUI 题由 Agent 操作界面并保存，评测端只验收实际产物。
+- `logs/config/php_line_count` 沿用读取证据和最终回答比较；其余十二题直接比较保存的文件或状态，不引入新的审核、轨迹审计或自动修复。
+- `MODE` 用于题目分类；当前 UFO 同时提供 LinuxGUI 与 Bash 工具，不另设 CLI／GUI 模式开关。`--local-services` 已启动两个 MCP、设备服务和客户端，沿用 UFO 配置与桌面环境；真实接口检查已通过。
+- 应用打开、服务连接成功只代表初始化完成，不代表工具链可用或 Agent 已经完成任务。
+
+### 3.3 后续联调与验收
+
+评测端代码、素材和工具接口联调已完成，下一步由用户运行真实评测。先在模型接口可用时
+跑通 `replace_text`，再用 `gui5.json` 验证新增五题，最后通过默认 `batch.py` 运行完整十五题。
+UFO 侧已提供复制、建目录、权限、移动和 ZIP 能力，评测端真实调用检查通过。
+不把先前离线检查或应用启动记录算作端到端通过。
+
+每题从新工作目录初始化，经 Galaxy → LinuxAgent 执行并通过独立验收后才记录通过。
+真实失败和超时照实保留，不自动重试到成功；沿用已有停止确认和定向清理，不扩建运行管理机制。
+十五题批次建议显式使用 `--timeout 1800`，这是每题 worker 等待期限，UFO 的内部动作预算需另行确认。
+
+已有验收器离线检查继续复用。`logs/config` 不新增通用语义审核器；PHP 无法明确解析的回答仍按原逻辑
+记录待复核，历史 `review.py` 保留，不作为其余十二题的依赖。
+历史成绩见 [第三步验证记录](src/linux-arena-container/STAGE3_VALIDATION.md)，不重写旧结果。
+
+### 3.4 Mobile 首版范围与后续
+
+本轮已新增九题，无需下载素材：返回桌面、打开设置/相机/时钟/计算器、开启自动旋转、关闭自动亮度、熄屏改为两分钟、调大字体。五个导航案例比较实际前台包名；四个设置案例保存原值、设置起点、读取结果判分，再恢复原值。默认九题不需要人工审核成绩。
+
+复用已有 `run.py` 与 `galaxy_worker.py`，通过 `GalaxyClient` 真实提交自然请求；`batch.py` 默认读取 `suites/mobile_mvp.json`，一条命令串行评测并汇总。保留原微信、解锁、天气三题为显式选项，不放入默认批次。案例放入 `cases/` 显式注册，测试和文档分别放入 `tests/`、`docs/`；不新增插件框架、审核系统或自动重试。
+
+下一项是连接实际手机验证默认九题。先确认默认应用与设置项能在这部手机上读写，再用现有批次执行；只修实际阻塞，不提前增加多厂商兼容层。离线检查和只读连接探测均不等于 Galaxy 端到端通过。详细命令、目录和局限见 [Mobile README](src/mobile-arena-container/README.md)。
+
 
 ## 第四步：增加 1–2 个跨设备通讯案例
 
@@ -146,4 +208,35 @@ Galaxy 自行规划依赖与设备分配。评测程序不要提前把答案塞�
 
 ## 后续 Agent 的起点
 
-当前下一步是第一阶段：在 `src/linux-arena-container/` 中实现最小的本机 Linux 评测流水线和 1–2 个简单案例。先确认现有 Linux 设备和 Galaxy 调用入口，再实现初始化、真实执行和独立验收。不要同时开工 Mobile、多案例扩展或跨设备阶段。
+2026-11-12 逐步截图归档：Linux 单题现将 UFO 生成的 `action_step*.png`（原图及标注图）
+和 `action_step*_ui.json` 复制到本轮 `traces/galaxy_<run_id>_<task_id>/`，包括尚未产生响应日志的采集步骤。
+Mobile 已有整目录归档会保留实际生成的逐步图片，`unlock` 的临时日志例外保持不变。
+两端模型当前都读取原图，并在标注图生成成功时同时读取标注图；Mobile 已有日志曾出现
+`arial.ttf` 无法加载导致标注失败，不能把只有原图的步骤称为已输入标注图。评测端不补画图片。
+验证：Linux／Mobile 各 30 项离线检查通过；已有 Linux 五步的 10 张 PNG 和 5 份 UI JSON
+复制后逐文件哈希一致，无响应日志的采集步骤也可归档。Mobile 临时运行目录清理前的图片复制
+及两端提示词的原图／标注图选择已离线验证。本次未调用模型或操作手机；具体存储路径见两端 README。
+本轮未修改 UFO3。
+
+2026-11-12 Linux 当前起点：评测端 `--local-services` 已对齐 LinuxGUI／Bash MCP 接口并通过实际调用检查，十五题重建素材检查通过。命令、逐题介绍与无需手动 reset 的重复评测方式已更新；本次不调用模型，不将工具检查记为题目通过。本轮未修改 UFO3。
+
+2026-11-11 Linux 历史整理：默认十五题、评级展示和文档已统一；UFO Linux GUI 工具、截图输入与评测端服务接入仍待联调。先补齐工具并确认模型接口可用，再从 GUI 试点推进至完整十五题。详见 [Linux README](src/linux-arena-container/README.md)。
+
+2026-11-10 Linux 历史交付：五道新增 GUI 题已实现，初始化素材、独立验收、难度标注、
+gui5/linux15 批次和来源目录整理完成。30 项离线检查、64 个素材校验及五题 LibreOffice
+打开保存兼容性检查通过。LibreOffice 24.2.7.2 已准备在用户目录，路径和运行方式见 Linux README。
+真实 gui5 批次五题均完成初始化，但模型返回 429/1113（余额不足或无可用资源包），无设备任务，
+全部按 execution_failed 保存并清理。待工具链和模型接口均就绪后重跑 gui5，工具由其他 Agent 负责，不增加审核机制。
+本轮未修改 UFO3。详见 [Linux GUI5](docs/Linux-GUI5-MVP.md) 与 [验证记录](src/linux-arena-container/STAGE3_VALIDATION.md)。
+
+2026-11-08 Mobile 后续起点：新增九题代码、自动验收与恢复、默认一键批次和目录整理已完成，原有三题保留，30 项离线检查通过。本机只读探测没有在线 ADB 设备，因此尚未进行新增题的真实评测。用户要求先交付首版再讨论，下一次真机联调沿用 `python src/mobile-arena-container/batch.py`，不重新建设审核或运行管理机制；UFO 工具继续由其他 Agent 负责。详见 [Mobile 验证记录](src/mobile-arena-container/docs/VALIDATION.md)。
+
+2026-11-06 MVP 后续起点：十题代码、素材和 suite 接入均已完成，23 项离线检查通过。当前真实运行限制是模型接口返回 429/1113（余额不足或无可用资源包），此次 checkout 仍使用旧 UFO 命令工具配置，本机未找到 LibreOffice 命令。UFO 工具由其他 Agent 维护，评测端不接手工具开发。环境就绪后先运行 `replace_text` 确认 GUI 联调，再运行 `batch.py --local-services` 或连接已有服务执行十题；如模型执行失败，保留实际结果，不自动重试。详细命令和每次尝试见 Linux README 与验证记录。不要把离线比较通过算作十题端到端通过。
+
+2026-11-04：已最小修复 UFO3 的 Mobile 设备身份上报（两个源码文件和一份新增测试），
+AgentArena 增加连接后身份校验；本轮只做离线测试。详细修改、完整补丁和仍未修复的
+Mobile FAIL 状态传播、旧能力合并及超时阶段记录问题见 [Mobile Code Review](src/mobile-arena-container/docs/REVIEW.md)。
+
+第一阶段已完成：`src/linux-arena-container/run.py` 支持日志统计与配置比较两个案例，均经真实 Galaxy → LinuxAgent → Linux MCP 执行并独立验收通过；配置案例在再次初始化后复测通过。错误答案检查与初始化阶段的超时检查已完成，全部尝试和清理结果见 [Linux 验证记录](src/linux-arena-container/VALIDATION.md)。本轮未修改 UFO3 源码或配置。
+
+第二阶段已有 `src/mobile-arena-container/run.py`、三个用户指定案例和独立证据采集、验收入口；微信/天气首版需要人工核对界面证据，解锁用系统状态变化验收。密码由运行时隐藏输入提供，不硬编码；已发送的微信不删除或撤回。当前三个用户请求已简化，天气地点改为北京海淀，运行元数据只保留在评测端。旧版天气执行记录已只读复核，原成绩未覆盖；现有新请求仍需用户运行并核对实际业务结果。第三步方案和离线结构整理可按用户最新指示推进，不据此宣称第二步复测完成，也不提前进入第四步跨设备评测。

@@ -1,0 +1,2 @@
+Permission exercise input: file1.txt
+Keep this content unchanged.

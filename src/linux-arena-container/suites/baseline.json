@@ -1,0 +1,7 @@
+{
+  "name": "linux-baseline-v2",
+  "cases": [
+    {"id": "logs", "mode": "cli"},
+    {"id": "config", "mode": "cli"}
+  ]
+}

@@ -1,0 +1,559 @@
+[
+  {
+    "id": "231",
+    "parent_id": "1",
+    "depth": 1,
+    "application": "Google Chrome",
+    "name": "",
+    "role": "frame",
+    "description": "",
+    "states": [
+      "<enum ATSPI_STATE_ENABLED of type Atspi.StateType>",
+      "<enum ATSPI_STATE_SENSITIVE of type Atspi.StateType>",
+      "<enum ATSPI_STATE_SHOWING of type Atspi.StateType>",
+      "<enum ATSPI_STATE_VISIBLE of type Atspi.StateType>"
+    ],
+    "showing": true,
+    "visible": true,
+    "attributes": [
+      "class:RootView",
+      "explicit-name:true"
+    ],
+    "interfaces": [
+      "Accessible",
+      "Action",
+      "Collection",
+      "Component",
+      "Document",
+      "Hypertext",
+      "Hyperlink",
+      "Text"
+    ],
+    "rect": [
+      165,
+      57,
+      1857,
+      145
+    ],
+    "actions": [
+      "doDefault",
+      "showContextMenu"
+    ],
+    "image_rect": [
+      165,
+      57,
+      1857,
+      145
+    ]
+  },
+  {
+    "id": "232",
+    "parent_id": "231",
+    "depth": 2,
+    "application": "Google Chrome",
+    "name": "",
+    "role": "panel",
+    "description": "",
+    "states": [
+      "<enum ATSPI_STATE_ENABLED of type Atspi.StateType>",
+      "<enum ATSPI_STATE_SENSITIVE of type Atspi.StateType>",
+      "<enum ATSPI_STATE_SHOWING of type Atspi.StateType>",
+      "<enum ATSPI_STATE_VISIBLE of type Atspi.StateType>"
+    ],
+    "showing": true,
+    "visible": true,
+    "attributes": [
+      "class:RoundedOmniboxResultsFrame"
+    ],
+    "interfaces": [
+      "Accessible",
+      "Action",
+      "Collection",
+      "Component",
+      "Document",
+      "Hypertext",
+      "Hyperlink",
+      "Text"
+    ],
+    "rect": [
+      165,
+      57,
+      1857,
+      145
+    ],
+    "actions": [
+      "doDefault",
+      "showContextMenu"
+    ],
+    "image_rect": [
+      165,
+      57,
+      1857,
+      145
+    ]
+  },
+  {
+    "id": "233",
+    "parent_id": "232",
+    "depth": 3,
+    "application": "Google Chrome",
+    "name": "",
+    "role": "panel",
+    "description": "",
+    "states": [
+      "<enum ATSPI_STATE_ENABLED of type Atspi.StateType>",
+      "<enum ATSPI_STATE_SENSITIVE of type Atspi.StateType>",
+      "<enum ATSPI_STATE_SHOWING of type Atspi.StateType>",
+      "<enum ATSPI_STATE_VISIBLE of type Atspi.StateType>"
+    ],
+    "showing": true,
+    "visible": true,
+    "attributes": [
+      "class:View"
+    ],
+    "interfaces": [
+      "Accessible",
+      "Action",
+      "Collection",
+      "Component",
+      "Document",
+      "Hypertext",
+      "Hyperlink",
+      "Text"
+    ],
+    "rect": [
+      181,
+      73,
+      1841,
+      117
+    ],
+    "actions": [
+      "doDefault",
+      "showContextMenu"
+    ],
+    "image_rect": [
+      181,
+      73,
+      1841,
+      117
+    ]
+  },
+  {
+    "id": "235",
+    "parent_id": "233",
+    "depth": 4,
+    "application": "Google Chrome",
+    "name": "",
+    "role": "panel",
+    "description": "",
+    "states": [
+      "<enum ATSPI_STATE_ENABLED of type Atspi.StateType>",
+      "<enum ATSPI_STATE_SENSITIVE of type Atspi.StateType>",
+      "<enum ATSPI_STATE_SHOWING of type Atspi.StateType>",
+      "<enum ATSPI_STATE_VISIBLE of type Atspi.StateType>"
+    ],
+    "showing": true,
+    "visible": true,
+    "attributes": [
+      "class:View"
+    ],
+    "interfaces": [
+      "Accessible",
+      "Action",
+      "Collection",
+      "Component",
+      "Document",
+      "Hypertext",
+      "Hyperlink",
+      "Text"
+    ],
+    "rect": [
+      181,
+      73,
+      1841,
+      117
+    ],
+    "actions": [
+      "doDefault",
+      "showContextMenu"
+    ],
+    "image_rect": [
+      181,
+      73,
+      1841,
+      117
+    ]
+  },
+  {
+    "id": "236",
+    "parent_id": "235",
+    "depth": 5,
+    "application": "Google Chrome",
+    "name": "",
+    "role": "panel",
+    "description": "",
+    "states": [
+      "<enum ATSPI_STATE_ENABLED of type Atspi.StateType>",
+      "<enum ATSPI_STATE_FOCUSABLE of type Atspi.StateType>",
+      "<enum ATSPI_STATE_SENSITIVE of type Atspi.StateType>",
+      "<enum ATSPI_STATE_SHOWING of type Atspi.StateType>",
+      "<enum ATSPI_STATE_VISIBLE of type Atspi.StateType>"
+    ],
+    "showing": true,
+    "visible": true,
+    "attributes": [
+      "class:OmniboxAimPopupWebUIContent",
+      "explicit-name:true"
+    ],
+    "interfaces": [
+      "Accessible",
+      "Action",
+      "Collection",
+      "Component",
+      "Document",
+      "Hypertext",
+      "Hyperlink",
+      "Text"
+    ],
+    "rect": [
+      181,
+      73,
+      1841,
+      117
+    ],
+    "actions": [
+      "doDefault",
+      "showContextMenu"
+    ],
+    "image_rect": [
+      181,
+      73,
+      1841,
+      117
+    ]
+  },
+  {
+    "id": "237",
+    "parent_id": "1",
+    "depth": 1,
+    "application": "Google Chrome",
+    "name": "",
+    "role": "frame",
+    "description": "",
+    "states": [
+      "<enum ATSPI_STATE_ENABLED of type Atspi.StateType>",
+      "<enum ATSPI_STATE_SENSITIVE of type Atspi.StateType>",
+      "<enum ATSPI_STATE_SHOWING of type Atspi.StateType>",
+      "<enum ATSPI_STATE_VISIBLE of type Atspi.StateType>"
+    ],
+    "showing": true,
+    "visible": true,
+    "attributes": [
+      "class:RootView",
+      "explicit-name:true"
+    ],
+    "interfaces": [
+      "Accessible",
+      "Action",
+      "Collection",
+      "Component",
+      "Document",
+      "Hypertext",
+      "Hyperlink",
+      "Text"
+    ],
+    "rect": [
+      165,
+      57,
+      1857,
+      195
+    ],
+    "actions": [
+      "doDefault",
+      "showContextMenu"
+    ],
+    "image_rect": [
+      165,
+      57,
+      1857,
+      195
+    ]
+  },
+  {
+    "id": "238",
+    "parent_id": "237",
+    "depth": 2,
+    "application": "Google Chrome",
+    "name": "",
+    "role": "panel",
+    "description": "",
+    "states": [
+      "<enum ATSPI_STATE_ENABLED of type Atspi.StateType>",
+      "<enum ATSPI_STATE_SENSITIVE of type Atspi.StateType>",
+      "<enum ATSPI_STATE_SHOWING of type Atspi.StateType>",
+      "<enum ATSPI_STATE_VISIBLE of type Atspi.StateType>"
+    ],
+    "showing": true,
+    "visible": true,
+    "attributes": [
+      "class:RoundedOmniboxResultsFrame"
+    ],
+    "interfaces": [
+      "Accessible",
+      "Action",
+      "Collection",
+      "Component",
+      "Document",
+      "Hypertext",
+      "Hyperlink",
+      "Text"
+    ],
+    "rect": [
+      165,
+      57,
+      1857,
+      195
+    ],
+    "actions": [
+      "doDefault",
+      "showContextMenu"
+    ],
+    "image_rect": [
+      165,
+      57,
+      1857,
+      195
+    ]
+  },
+  {
+    "id": "239",
+    "parent_id": "238",
+    "depth": 3,
+    "application": "Google Chrome",
+    "name": "",
+    "role": "panel",
+    "description": "",
+    "states": [
+      "<enum ATSPI_STATE_ENABLED of type Atspi.StateType>",
+      "<enum ATSPI_STATE_SENSITIVE of type Atspi.StateType>",
+      "<enum ATSPI_STATE_SHOWING of type Atspi.StateType>",
+      "<enum ATSPI_STATE_VISIBLE of type Atspi.StateType>"
+    ],
+    "showing": true,
+    "visible": true,
+    "attributes": [
+      "class:View"
+    ],
+    "interfaces": [
+      "Accessible",
+      "Action",
+      "Collection",
+      "Component",
+      "Document",
+      "Hypertext",
+      "Hyperlink",
+      "Text"
+    ],
+    "rect": [
+      181,
+      73,
+      1841,
+      167
+    ],
+    "actions": [
+      "doDefault",
+      "showContextMenu"
+    ],
+    "image_rect": [
+      181,
+      73,
+      1841,
+      167
+    ]
+  },
+  {
+    "id": "240",
+    "parent_id": "239",
+    "depth": 4,
+    "application": "Google Chrome",
+    "name": "",
+    "role": "panel",
+    "description": "",
+    "states": [
+      "<enum ATSPI_STATE_ENABLED of type Atspi.StateType>",
+      "<enum ATSPI_STATE_SENSITIVE of type Atspi.StateType>",
+      "<enum ATSPI_STATE_SHOWING of type Atspi.StateType>",
+      "<enum ATSPI_STATE_VISIBLE of type Atspi.StateType>"
+    ],
+    "showing": true,
+    "visible": true,
+    "attributes": [
+      "class:TopBackgroundView"
+    ],
+    "interfaces": [
+      "Accessible",
+      "Action",
+      "Collection",
+      "Component",
+      "Document",
+      "Hypertext",
+      "Hyperlink",
+      "Text"
+    ],
+    "rect": [
+      187,
+      78,
+      1835,
+      112
+    ],
+    "actions": [
+      "doDefault",
+      "showContextMenu"
+    ],
+    "image_rect": [
+      187,
+      78,
+      1835,
+      112
+    ]
+  },
+  {
+    "id": "241",
+    "parent_id": "239",
+    "depth": 4,
+    "application": "Google Chrome",
+    "name": "",
+    "role": "panel",
+    "description": "",
+    "states": [
+      "<enum ATSPI_STATE_ENABLED of type Atspi.StateType>",
+      "<enum ATSPI_STATE_SENSITIVE of type Atspi.StateType>",
+      "<enum ATSPI_STATE_SHOWING of type Atspi.StateType>",
+      "<enum ATSPI_STATE_VISIBLE of type Atspi.StateType>"
+    ],
+    "showing": true,
+    "visible": true,
+    "attributes": [
+      "class:View"
+    ],
+    "interfaces": [
+      "Accessible",
+      "Action",
+      "Collection",
+      "Component",
+      "Document",
+      "Hypertext",
+      "Hyperlink",
+      "Text"
+    ],
+    "rect": [
+      181,
+      117,
+      1841,
+      167
+    ],
+    "actions": [
+      "doDefault",
+      "showContextMenu"
+    ],
+    "image_rect": [
+      181,
+      117,
+      1841,
+      167
+    ]
+  },
+  {
+    "id": "242",
+    "parent_id": "241",
+    "depth": 5,
+    "application": "Google Chrome",
+    "name": "",
+    "role": "panel",
+    "description": "",
+    "states": [
+      "<enum ATSPI_STATE_ENABLED of type Atspi.StateType>",
+      "<enum ATSPI_STATE_SENSITIVE of type Atspi.StateType>",
+      "<enum ATSPI_STATE_SHOWING of type Atspi.StateType>",
+      "<enum ATSPI_STATE_VISIBLE of type Atspi.StateType>"
+    ],
+    "showing": true,
+    "visible": true,
+    "attributes": [
+      "class:OmniboxPopupWebUIContent",
+      "explicit-name:true"
+    ],
+    "interfaces": [
+      "Accessible",
+      "Action",
+      "Collection",
+      "Component",
+      "Document",
+      "Hypertext",
+      "Hyperlink",
+      "Text"
+    ],
+    "rect": [
+      181,
+      117,
+      1841,
+      167
+    ],
+    "actions": [
+      "doDefault",
+      "showContextMenu"
+    ],
+    "image_rect": [
+      181,
+      117,
+      1841,
+      167
+    ]
+  },
+  {
+    "id": "243",
+    "parent_id": "242",
+    "depth": 6,
+    "application": "Google Chrome",
+    "name": "",
+    "role": "panel",
+    "description": "",
+    "states": [
+      "<enum ATSPI_STATE_ENABLED of type Atspi.StateType>",
+      "<enum ATSPI_STATE_SENSITIVE of type Atspi.StateType>",
+      "<enum ATSPI_STATE_SHOWING of type Atspi.StateType>",
+      "<enum ATSPI_STATE_VISIBLE of type Atspi.StateType>"
+    ],
+    "showing": true,
+    "visible": true,
+    "attributes": [
+      "class:NativeViewHost"
+    ],
+    "interfaces": [
+      "Accessible",
+      "Action",
+      "Collection",
+      "Component",
+      "Document",
+      "Hypertext",
+      "Hyperlink",
+      "Text"
+    ],
+    "rect": [
+      181,
+      117,
+      1841,
+      167
+    ],
+    "actions": [
+      "doDefault",
+      "showContextMenu"
+    ],
+    "image_rect": [
+      181,
+      117,
+      1841,
+      167
+    ]
+  }
+]

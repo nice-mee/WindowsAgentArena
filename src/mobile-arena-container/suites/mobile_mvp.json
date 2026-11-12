@@ -1,0 +1,14 @@
+{
+  "name": "mobile-mvp-v1",
+  "cases": [
+    "home",
+    "open_settings",
+    "open_camera",
+    "open_clock",
+    "open_calculator",
+    "auto_rotate",
+    "auto_brightness",
+    "screen_timeout",
+    "font_size"
+  ]
+}

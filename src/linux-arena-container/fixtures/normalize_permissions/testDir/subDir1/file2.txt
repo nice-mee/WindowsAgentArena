@@ -1,0 +1,2 @@
+Permission exercise input: subDir1/file2.txt
+Keep this content unchanged.

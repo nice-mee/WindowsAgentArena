@@ -1,0 +1,25 @@
+{
+  "name": "linux-gui5-mvp",
+  "cases": [
+    {
+      "id": "unique_names",
+      "mode": "gui"
+    },
+    {
+      "id": "sort_and_chart",
+      "mode": "gui"
+    },
+    {
+      "id": "writer_cross_reference",
+      "mode": "gui"
+    },
+    {
+      "id": "slide_style_match",
+      "mode": "gui"
+    },
+    {
+      "id": "purchase_order_reconcile",
+      "mode": "gui"
+    }
+  ]
+}

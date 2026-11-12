@@ -1,0 +1,70 @@
+{
+  "review": {
+    "R101": [
+      "Approved",
+      1500
+    ],
+    "R102": [
+      "Rejected",
+      700
+    ],
+    "R103": [
+      "Approved",
+      2500
+    ],
+    "R104": [
+      "Rejected",
+      900
+    ],
+    "R105": [
+      "Approved",
+      600
+    ],
+    "R106": [
+      "Rejected",
+      2250
+    ],
+    "R107": [
+      "Approved",
+      480
+    ],
+    "R108": [
+      "Pending",
+      700
+    ]
+  },
+  "orders": {
+    "R101": [
+      "Engineering",
+      "Laptop",
+      "CenTech",
+      1,
+      1500,
+      1500
+    ],
+    "R103": [
+      "Marketing",
+      "Camera",
+      "OpticHouse",
+      1,
+      2500,
+      2500
+    ],
+    "R105": [
+      "Sales",
+      "CRM license",
+      "CloudSuite",
+      1,
+      600,
+      600
+    ],
+    "R107": [
+      "Operations",
+      "Chair",
+      "OfficeMart",
+      4,
+      120,
+      480
+    ]
+  }
+}

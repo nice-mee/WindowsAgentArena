@@ -1,0 +1,65 @@
+{
+  "name": "linux-stage3-linux15-mvp",
+  "cases": [
+    {
+      "id": "logs",
+      "mode": "cli"
+    },
+    {
+      "id": "config",
+      "mode": "cli"
+    },
+    {
+      "id": "php_line_count",
+      "mode": "cli"
+    },
+    {
+      "id": "collect_jpg",
+      "mode": "cli"
+    },
+    {
+      "id": "collect_failed_notebooks",
+      "mode": "cli"
+    },
+    {
+      "id": "normalize_permissions",
+      "mode": "cli"
+    },
+    {
+      "id": "archive_by_age",
+      "mode": "cli"
+    },
+    {
+      "id": "replace_text",
+      "mode": "gui"
+    },
+    {
+      "id": "zoom_out",
+      "mode": "gui"
+    },
+    {
+      "id": "monthly_sales",
+      "mode": "gui"
+    },
+    {
+      "id": "unique_names",
+      "mode": "gui"
+    },
+    {
+      "id": "sort_and_chart",
+      "mode": "gui"
+    },
+    {
+      "id": "writer_cross_reference",
+      "mode": "gui"
+    },
+    {
+      "id": "slide_style_match",
+      "mode": "gui"
+    },
+    {
+      "id": "purchase_order_reconcile",
+      "mode": "gui"
+    }
+  ]
+}

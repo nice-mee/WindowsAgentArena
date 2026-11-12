@@ -1,0 +1,128 @@
+{
+  "session": "x11",
+  "screenshot_backend": "Pillow ImageGrab / X11",
+  "applications": [
+    "gnome-shell",
+    "gsd-keyboard",
+    "gsd-color",
+    "gsd-power",
+    "gsd-wacom",
+    "gsd-media-keys",
+    "evolution-alarm-notify",
+    "gsd-xsettings",
+    "xdg-desktop-portal-gtk",
+    "sogoupinyin-watchdog",
+    "sogou-qimpanel-watchdog",
+    "sogoupinyin-service",
+    "sogoupinyin-service",
+    "clash-verge",
+    "update-notifier",
+    "code",
+    "Google Chrome",
+    "mutter-x11-frames",
+    "xdg-desktop-portal-gnome",
+    "gjs"
+  ],
+  "active_window": {
+    "pid": 9556,
+    "title": "screen.png - GUI-Agent - Visual Studio Code - Untracked"
+  },
+  "window_inventory": [
+    {
+      "application": "gnome-shell",
+      "pid": 2800,
+      "title": "",
+      "showing": true,
+      "active": false
+    },
+    {
+      "application": "sogoupinyin-service",
+      "pid": 3455,
+      "title": "SogouKeyboardUIWnd",
+      "showing": true,
+      "active": false
+    },
+    {
+      "application": "sogoupinyin-service",
+      "pid": 3455,
+      "title": "SogouKeyboardUIWnd",
+      "showing": false,
+      "active": false
+    },
+    {
+      "application": "clash-verge",
+      "pid": 4646,
+      "title": "Clash Verge",
+      "showing": true,
+      "active": false
+    },
+    {
+      "application": "code",
+      "pid": 9556,
+      "title": "screen.png - GUI-Agent - Visual Studio Code - Untracked",
+      "showing": true,
+      "active": true
+    },
+    {
+      "application": "Google Chrome",
+      "pid": 14426,
+      "title": "AndroidWorld: A Dynamic Benchmarking Environment for Autonomous Agents | AndroidWorld - Google Chrome",
+      "showing": false,
+      "active": true
+    },
+    {
+      "application": "Google Chrome",
+      "pid": 14426,
+      "title": "",
+      "showing": true,
+      "active": false
+    },
+    {
+      "application": "Google Chrome",
+      "pid": 14426,
+      "title": "",
+      "showing": true,
+      "active": false
+    },
+    {
+      "application": "gjs",
+      "pid": 62251,
+      "title": "Desktop icons",
+      "showing": true,
+      "active": false
+    }
+  ],
+  "selection_warning": null,
+  "app_filter": null,
+  "selected_windows": [
+    {
+      "application": "code",
+      "window": "screen.png - GUI-Agent - Visual Studio Code - Untracked"
+    }
+  ],
+  "all_windows": false,
+  "include_text": false,
+  "nodes": 2304,
+  "annotated_controls": 161,
+  "truncated": false,
+  "errors": [],
+  "desktop_rect": [
+    0,
+    0,
+    1920,
+    1080
+  ],
+  "image_size": [
+    1920,
+    1080
+  ],
+  "coordinate_scale": [
+    1.0,
+    1.0
+  ],
+  "notes": [
+    "Screenshot and tree are sequential, not atomic.",
+    "AT-SPI showing/visible does not guarantee a window is not occluded.",
+    "Mixed-DPI or Wayland coordinates may need desktop-specific calibration."
+  ]
+}
